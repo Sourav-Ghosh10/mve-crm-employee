@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TimezoneDualView from "../../components/common/TimezoneDualView";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 import {
   Calendar,
   Plus,
@@ -76,6 +78,7 @@ const getLeaveTypeClass = (type: string | LeaveType) => {
 };
 
 const Leave: React.FC = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
   const queryClient = useQueryClient();
 
   // Filter state
@@ -247,7 +250,7 @@ const Leave: React.FC = () => {
 
     const timeoutId = setTimeout(fetchCalculatedDays, 300); // Debounce
     return () => clearTimeout(timeoutId);
-  }, [startDate, endDate, isHalfDay]);
+  }, [startDate, endDate, isHalfDay, isEarlyLeave, requestedHours]);
 
   const resetForm = () => {
     setLeaveType("");
@@ -501,6 +504,38 @@ const Leave: React.FC = () => {
       const normalizedBalanceType = bTypeName.toLowerCase().replace(" leave", "");
       return normalizedBalanceType === normalizedSearch;
     });
+  };
+  const getEarlyLeaveHours = (request: any) => {
+    // If backend already calculated it specifically (numberOfDays is not 1), use it
+    if (request.status !== "pending" && (request.numberOfDays ?? 1) !== 1) {
+       const reqBalance = getBalanceForType(request.leaveType); 
+       return (request.numberOfDays ?? 0) * (reqBalance?.workingHoursPerDay || 8);
+    }
+    
+    // Otherwise calculate dynamically for pending
+    if (!request.startDate) return 8;
+    
+    const departureTime = new Date(request.startDate);
+    let rosterEndHour = 18;
+    let rosterEndMinute = 0;
+    
+    if (user?.workingHours?.endTime) {
+      const [h, m] = user.workingHours.endTime.split(':');
+      rosterEndHour = parseInt(h, 10) || 18;
+      rosterEndMinute = parseInt(m, 10) || 0;
+    }
+    
+    const rosterEndTime = new Date(request.startDate);
+    rosterEndTime.setHours(rosterEndHour, rosterEndMinute, 0, 0);
+    
+    const diffMs = rosterEndTime.getTime() - departureTime.getTime();
+    let diffHours = diffMs / (1000 * 60 * 60);
+    
+    if (diffHours < 0) diffHours = 0;
+    if (diffHours > 8) diffHours = 8;
+    
+    // Round to 1 decimal place
+    return Math.round(diffHours * 10) / 10;
   };
 
   const requestedDays = apiCalculatedDays;
@@ -855,7 +890,7 @@ const Leave: React.FC = () => {
                         </div>
                         <div>
                           <div className="font-semibold text-foreground flex items-center gap-2 flex-wrap">
-                            {leaveTypeLabels[request.leaveType as LeaveType] || request.leaveType}
+                            {(request.leaveType?.toLowerCase().includes('hourly') || request.leaveType?.toLowerCase().includes('early')) ? "Early Leave" : (leaveTypeLabels[request.leaveType as LeaveType] || request.leaveType)}
                             {request.attachments && request.attachments.length > 0 && (
                               <span className="text-xs font-normal bg-muted px-2 py-0.5 rounded text-foreground-secondary flex items-center gap-1">
                                 <FileText className="w-3 h-3" />
@@ -864,10 +899,21 @@ const Leave: React.FC = () => {
                             )}
                           </div>
                           <div className="text-sm text-foreground-secondary flex items-center gap-2 flex-wrap">
-                            <span>
-                              {request.numberOfDays ?? 0} day{(request.numberOfDays ?? 0) !== 1 ? "s" : ""} {(() => { const reqBalance = getBalanceForType(request.leaveType); const hrs = (request.numberOfDays ?? 0) * (reqBalance?.workingHoursPerDay || 8); return hrs > 0 ? `(${hrs}h)` : ""; })()}
-                            </span>
-                            <span className="w-1 h-1 rounded-full bg-foreground-tertiary" />
+                            {(request.leaveType?.toLowerCase().includes('hourly') || request.leaveType?.toLowerCase().includes('early')) ? (
+                              <>
+                                <span>
+                                  {getEarlyLeaveHours(request)}h
+                                </span>
+                                <span className="w-1 h-1 rounded-full bg-foreground-tertiary" />
+                              </>
+                            ) : (
+                              <>
+                                <span>
+                                  {request.numberOfDays ?? 0} day{(request.numberOfDays ?? 0) !== 1 ? "s" : ""} {(() => { const reqBalance = getBalanceForType(request.leaveType); const hrs = (request.numberOfDays ?? 0) * (reqBalance?.workingHoursPerDay || 8); return hrs > 0 ? `(${hrs}h)` : ""; })()}
+                                </span>
+                                <span className="w-1 h-1 rounded-full bg-foreground-tertiary" />
+                              </>
+                            )}
                             <span className="flex items-center gap-2">
                                 {formatDateRange(request.startDate, request.endDate, request.halfDay)}
                                 {request.leaveType?.toLowerCase().includes('hourly') && (
