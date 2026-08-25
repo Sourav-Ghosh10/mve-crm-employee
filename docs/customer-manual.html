@@ -1,0 +1,2902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse Ops &mdash; Customer Manual</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #e0e7ff;
+      --primary-dark: #3730a3;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --info: #0284c7;
+      --info-light: #e0f2fe;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --sidebar-width: 280px;
+      --header-height: 64px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+      --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--gray-800);
+      background: var(--gray-50);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== SIDEBAR NAV ===== */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: white;
+      border-right: 1px solid var(--gray-200);
+      overflow-y: auto;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: transform .3s ease;
+    }
+
+    .sidebar-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .sidebar-header p {
+      font-size: .8rem;
+      font-weight: 500;
+      color: #c7d2fe;
+      margin-top: 4px;
+      letter-spacing: .02em;
+    }
+
+    .sidebar-nav { padding: 12px 0; flex: 1; }
+
+    .sidebar-nav .nav-group {
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-nav .nav-group-title {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-400);
+      padding: 8px 12px 4px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: .85rem;
+      color: var(--gray-600);
+      text-decoration: none;
+      transition: all .15s;
+    }
+
+    .sidebar-nav a:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .sidebar-nav a .nav-icon {
+      width: 20px;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      height: var(--header-height);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      z-index: 50;
+    }
+
+    .top-bar .breadcrumb {
+      font-size: .85rem;
+      color: var(--gray-500);
+    }
+
+    .top-bar .breadcrumb span { color: var(--gray-800); font-weight: 600; }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-right: 16px;
+      color: var(--gray-700);
+    }
+
+    .content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    h2 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      letter-spacing: -.03em;
+      margin-bottom: 8px;
+      padding-top: 32px;
+    }
+
+    h2 .section-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+
+    h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p { margin-bottom: 14px; color: var(--gray-600); }
+
+    .section-intro {
+      font-size: 1.05rem;
+      color: var(--gray-500);
+      margin-bottom: 28px;
+      border-left: 3px solid var(--primary);
+      padding-left: 16px;
+    }
+
+    /* ===== HERO BANNER ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--primary), #7c3aed, var(--primary-dark));
+      color: white;
+      border-radius: 16px;
+      padding: 48px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60%; right: -20%;
+      width: 500px; height: 500px;
+      background: rgba(255,255,255,.06);
+      border-radius: 50%;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40%; left: -10%;
+      width: 350px; height: 350px;
+      background: rgba(255,255,255,.04);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      opacity: .9;
+      max-width: 600px;
+      color: rgba(255,255,255,.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero .version-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-header .card-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .card-header h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* ===== INFO BOXES ===== */
+    .info-box {
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+
+    .info-box .info-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+
+    .info-box.tip {
+      background: var(--success-light);
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .info-box.warning {
+      background: var(--warning-light);
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .info-box.danger {
+      background: var(--danger-light);
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .info-box.info {
+      background: var(--info-light);
+      border: 1px solid #bae6fd;
+      color: #075985;
+    }
+
+    /* ===== STEP-BY-STEP ===== */
+    .steps { margin: 20px 0; counter-reset: step-counter; }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-number {
+      counter-increment: step-counter;
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .step-number::before { content: counter(step-counter); }
+
+    .step-content h4 { margin-top: 0; margin-bottom: 4px; font-size: .95rem; }
+    .step-content p { margin-bottom: 0; font-size: .9rem; }
+
+    /* ===== TABLES ===== */
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: .88rem;
+    }
+
+    .doc-table th {
+      background: var(--gray-100);
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--gray-600);
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .doc-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .doc-table tr:hover td { background: var(--gray-50); }
+
+    /* ===== BADGES ===== */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-primary { background: var(--primary-light); color: var(--primary); }
+    .badge-success { background: var(--success-light); color: var(--success); }
+    .badge-warning { background: var(--warning-light); color: #b45309; }
+    .badge-danger { background: var(--danger-light); color: var(--danger); }
+    .badge-info { background: var(--info-light); color: var(--info); }
+    .badge-gray { background: var(--gray-100); color: var(--gray-600); }
+
+    /* ===== KBD ===== */
+    kbd {
+      display: inline-block;
+      padding: 2px 8px;
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      box-shadow: 0 1px 0 var(--gray-300);
+    }
+
+    /* ===== CODE ===== */
+    code {
+      font-family: var(--font-mono);
+      font-size: .85em;
+      background: var(--gray-100);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary-dark);
+    }
+
+    /* ===== FEATURE GRID ===== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .feature-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: all .2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .feature-card .fc-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+
+    .feature-card h4 { margin: 0 0 6px; font-size: .95rem; }
+    .feature-card p { margin: 0; font-size: .85rem; color: var(--gray-500); }
+
+    /* ===== DIVIDERS ===== */
+    .divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 40px 0;
+    }
+
+    /* ===== SCREENSHOTS PLACEHOLDER ===== */
+    .screen-placeholder {
+      background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+      border: 2px dashed var(--gray-300);
+      border-radius: var(--radius);
+      padding: 40px;
+      text-align: center;
+      color: var(--gray-400);
+      font-size: .9rem;
+      margin: 16px 0;
+    }
+
+    /* ===== FAQ ===== */
+    details {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      background: white;
+    }
+
+    details[open] { box-shadow: var(--shadow-sm); }
+
+    summary {
+      padding: 14px 20px;
+      font-weight: 600;
+      font-size: .92rem;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gray-800);
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::before {
+      content: '\25B6';
+      font-size: .7rem;
+      transition: transform .2s;
+      color: var(--gray-400);
+    }
+
+    details[open] summary::before { transform: rotate(90deg); }
+
+    details .faq-body {
+      padding: 0 20px 16px;
+      font-size: .9rem;
+      color: var(--gray-600);
+    }
+
+    /* ===== FOOTER ===== */
+    .doc-footer {
+      text-align: center;
+      padding: 32px;
+      border-top: 1px solid var(--gray-200);
+      color: var(--gray-400);
+      font-size: .82rem;
+      margin-top: 60px;
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all .3s;
+      z-index: 200;
+    }
+
+    .back-to-top.visible { opacity: 1; transform: translateY(0); }
+    .back-to-top:hover { background: var(--primary-dark); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+      .main { margin-left: 0; }
+      .hamburger { display: block; }
+      .content { padding: 24px 20px 60px; }
+      .hero { padding: 32px 24px; }
+      .hero h1 { font-size: 1.8rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===== OVERLAY ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 90;
+      display: none;
+    }
+
+    .overlay.visible { display: block; }
+
+    /* ===== SCROLL INDICATOR ===== */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: var(--primary);
+      z-index: 999;
+      transition: width .1s;
+    }
+
+    /* ===== UI MOCKUPS ===== */
+    .ui-mockup {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .ui-mockup .mockup-titlebar {
+      background: var(--gray-100);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .ui-mockup .mockup-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .ui-mockup .mockup-dot.red { background: #ef4444; }
+    .ui-mockup .mockup-dot.yellow { background: #f59e0b; }
+    .ui-mockup .mockup-dot.green { background: #22c55e; }
+
+    .ui-mockup .mockup-url {
+      flex: 1;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: .72rem;
+      color: var(--gray-500);
+      margin-left: 8px;
+    }
+
+    .ui-mockup .mockup-body {
+      padding: 20px;
+    }
+
+    /* ===== FLOW DIAGRAMS ===== */
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin: 24px 0;
+      padding: 24px 16px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+    }
+
+    .flow-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .flow-node .flow-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .flow-node .flow-label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .flow-node .flow-sub {
+      font-size: .68rem;
+      color: var(--gray-400);
+    }
+
+    .flow-arrow {
+      font-size: 1.2rem;
+      color: var(--gray-300);
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+
+    /* ===== STATUS PIPELINE ===== */
+    .status-pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    .pipeline-stage {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: .82rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pipeline-stage .stage-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pipeline-arrow {
+      font-size: 1.4rem;
+      color: var(--gray-300);
+      padding: 0 8px;
+      flex-shrink: 0;
+    }
+
+    /* ===== VISUAL LAYOUT DIAGRAM ===== */
+    .layout-diagram {
+      border: 2px solid var(--gray-300);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+      box-shadow: var(--shadow);
+      font-size: .8rem;
+    }
+
+    .layout-diagram .ld-header {
+      background: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .layout-diagram .ld-body {
+      display: flex;
+      min-height: 200px;
+    }
+
+    .layout-diagram .ld-sidebar {
+      width: 160px;
+      background: var(--gray-100);
+      border-right: 2px solid var(--gray-300);
+      padding: 12px;
+      flex-shrink: 0;
+    }
+
+    .layout-diagram .ld-sidebar-item {
+      padding: 6px 10px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      font-size: .72rem;
+      color: var(--gray-600);
+    }
+
+    .layout-diagram .ld-sidebar-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .layout-diagram .ld-content {
+      flex: 1;
+      padding: 16px;
+      background: var(--gray-50);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .layout-diagram .ld-content-block {
+      background: white;
+      border: 1px dashed var(--gray-300);
+      border-radius: 6px;
+      padding: 12px;
+      color: var(--gray-400);
+      text-align: center;
+      font-size: .75rem;
+    }
+
+    .layout-diagram .ld-footer {
+      background: var(--gray-100);
+      border-top: 2px solid var(--gray-300);
+      padding: 8px 20px;
+      text-align: center;
+      color: var(--gray-400);
+      font-size: .7rem;
+    }
+
+    /* ===== COLOR SWATCHES ===== */
+    .swatch-row {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--gray-200), var(--shadow-sm);
+      transition: transform .2s;
+    }
+
+    .swatch-circle:hover { transform: scale(1.15); }
+
+    .swatch-label {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--gray-500);
+    }
+
+    /* ===== VISUAL BUTTON PREVIEW ===== */
+    .btn-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: .82rem;
+      font-weight: 600;
+      border: none;
+      cursor: default;
+      margin: 4px;
+    }
+
+    .btn-preview.primary { background: var(--primary); color: white; }
+    .btn-preview.success { background: var(--success); color: white; }
+    .btn-preview.warning { background: var(--warning); color: white; }
+    .btn-preview.danger { background: var(--danger); color: white; }
+    .btn-preview.outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
+    .btn-preview.ghost { background: var(--gray-100); color: var(--gray-600); }
+
+    /* ===== TOGGLE PREVIEW ===== */
+    .toggle-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+
+    .toggle-track {
+      width: 44px; height: 24px;
+      border-radius: 12px;
+      position: relative;
+      transition: background .2s;
+    }
+
+    .toggle-track.on { background: var(--primary); }
+    .toggle-track.off { background: var(--gray-300); }
+
+    .toggle-knob {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: white;
+      position: absolute;
+      top: 3px;
+      box-shadow: var(--shadow-sm);
+      transition: left .2s;
+    }
+
+    .toggle-track.on .toggle-knob { left: 23px; }
+    .toggle-track.off .toggle-knob { left: 3px; }
+
+    .toggle-label { font-size: .82rem; color: var(--gray-600); }
+
+    /* ===== STAT CARD PREVIEW ===== */
+    .stat-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .stat-preview {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 16px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-preview .sp-label {
+      font-size: .72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--gray-400);
+      margin-bottom: 4px;
+    }
+
+    .stat-preview .sp-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--gray-800);
+      letter-spacing: -.02em;
+    }
+
+    .stat-preview .sp-trend {
+      font-size: .72rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ===== WEEKLY GRID PREVIEW ===== */
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin: 16px 0;
+    }
+
+    .week-day {
+      text-align: center;
+      padding: 10px 4px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+      font-size: .75rem;
+    }
+
+    .week-day .wd-name {
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .week-day .wd-hours {
+      font-size: .85rem;
+      font-weight: 800;
+    }
+
+    .week-day .wd-status {
+      font-size: .65rem;
+      margin-top: 2px;
+    }
+
+    /* ===== FORM MOCKUP ===== */
+    .form-mockup {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 16px 0;
+    }
+
+    .form-mockup .fm-row {
+      margin-bottom: 14px;
+    }
+
+    .form-mockup .fm-label {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .form-mockup .fm-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: .85rem;
+      color: var(--gray-400);
+      background: var(--gray-50);
+    }
+
+    .form-mockup .fm-input.filled {
+      color: var(--gray-700);
+      background: white;
+    }
+
+    .form-mockup .fm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ===== PROFILE CARD PREVIEW ===== */
+    .profile-preview {
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      border-radius: 12px;
+      padding: 24px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: 16px 0;
+    }
+
+    .profile-preview .pp-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      border: 3px solid rgba(255,255,255,.3);
+    }
+
+    .profile-preview .pp-info h4 { color: white; margin: 0 0 2px; font-size: 1.1rem; }
+    .profile-preview .pp-info p { color: rgba(255,255,255,.8); margin: 0; font-size: .85rem; }
+    .profile-preview .pp-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.2);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: .7rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      .sidebar, .top-bar, .back-to-top, .scroll-progress, .hamburger, .overlay { display: none !important; }
+      .main { margin-left: 0; }
+      .content { max-width: 100%; padding: 20px; }
+      .hero { background: var(--primary) !important; }
+      .card, details { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Mobile Overlay -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>Pulse Ops</h1>
+    <p>Customer Manual</p>
+  </div>
+  <nav class="sidebar-nav">
+
+    <div class="nav-group">
+      <div class="nav-group-title">Getting Started</div>
+      <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+      <a href="#login"><span class="nav-icon">&#128274;</span> Logging In</a>
+      <a href="#navigation"><span class="nav-icon">&#129517;</span> Navigation</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Core Modules</div>
+      <a href="#dashboard"><span class="nav-icon">&#128202;</span> Dashboard</a>
+      <a href="#attendance"><span class="nav-icon">&#9201;</span> Attendance</a>
+      <a href="#leave"><span class="nav-icon">&#127796;</span> Leave Management</a>
+      <a href="#schedule"><span class="nav-icon">&#128197;</span> Schedule</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Communication</div>
+      <a href="#announcements"><span class="nav-icon">&#128227;</span> Announcements</a>
+      <a href="#notifications"><span class="nav-icon">&#128276;</span> Notifications</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Finance</div>
+      <a href="#reimbursements"><span class="nav-icon">&#128176;</span> Reimbursements</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Administration</div>
+      <a href="#users"><span class="nav-icon">&#128101;</span> User Management</a>
+      <a href="#profile"><span class="nav-icon">&#128100;</span> My Profile</a>
+      <a href="#settings"><span class="nav-icon">&#9881;</span> Settings</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Reference</div>
+      <a href="#roles"><span class="nav-icon">&#128272;</span> Roles &amp; Permissions</a>
+      <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+      <a href="#troubleshooting"><span class="nav-icon">&#128295;</span> Troubleshooting</a>
+      <a href="#glossary"><span class="nav-icon">&#128214;</span> Glossary</a>
+    </div>
+
+  </nav>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+    <div class="breadcrumb">Pulse Ops &rsaquo; <span>Customer Manual</span></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== HERO ===== -->
+    <div class="hero">
+      <div class="version-badge">v1.0 &middot; Last updated February 2026</div>
+      <h1>Pulse Ops Customer Manual</h1>
+      <p>Your complete guide to managing attendance, leave, schedules, reimbursements, and more with the Pulse Ops Human Resource Management platform.</p>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: OVERVIEW                                             -->
+    <!-- ============================================================ -->
+    <h2 id="overview">
+      <span class="section-icon" style="background:var(--primary-light);color:var(--primary);">&#127968;</span>
+      Overview
+    </h2>
+    <p class="section-intro">Pulse Ops is a modern, full-featured HR management platform designed to streamline daily workforce operations for employees, managers, and administrators.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--primary-light);color:var(--primary);">&#9201;</div>
+        <h4>Real-Time Attendance</h4>
+        <p>Clock in/out, manage breaks, and review daily &amp; monthly attendance with live tracking.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--success-light);color:var(--success);">&#127796;</div>
+        <h4>Leave Management</h4>
+        <p>Apply for leave, track balances across multiple leave types, and view approval statuses.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--warning-light);color:#b45309;">&#128197;</div>
+        <h4>Schedule &amp; Shifts</h4>
+        <p>View your weekly roster, shift timings, holidays, and off-days at a glance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--info-light);color:var(--info);">&#128227;</div>
+        <h4>Announcements</h4>
+        <p>Stay informed with company-wide announcements, scrolling marquee alerts, and acknowledgment tracking.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--danger-light);color:var(--danger);">&#128176;</div>
+        <h4>Reimbursements</h4>
+        <p>Submit, edit, and track expense reimbursement claims with receipt attachments.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:#f3e8ff;color:#7c3aed;">&#128101;</div>
+        <h4>User Administration</h4>
+        <p>Create, edit, and manage employee profiles, roles, departments, and designations.</p>
+      </div>
+    </div>
+
+    <div class="info-box info">
+      <span class="info-icon">&#128161;</span>
+      <div><strong>Supported browsers:</strong> Pulse Ops works best on the latest versions of Google Chrome, Mozilla Firefox, Microsoft Edge, and Safari. JavaScript must be enabled.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: LOGIN                                                -->
+    <!-- ============================================================ -->
+    <h2 id="login">
+      <span class="section-icon" style="background:var(--primary-light);color:var(--primary);">&#128274;</span>
+      Logging In
+    </h2>
+    <p class="section-intro">Access Pulse Ops by signing in with your company credentials or via Google single sign-on.</p>
+
+    <!-- Login Form Mockup -->
+    <div class="ui-mockup">
+      <div class="mockup-titlebar">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+        <div class="mockup-url">app.pulseops.com/login</div>
+      </div>
+      <div class="mockup-body" style="display:flex;gap:32px;align-items:center;">
+        <div style="flex:1;padding:20px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:8px;">&#128188;</div>
+          <div style="font-size:1.1rem;font-weight:800;color:var(--primary);margin-bottom:6px;">Pulse Ops</div>
+          <div style="font-size:.75rem;color:var(--gray-400);line-height:1.5;">
+            &#9889; Streamlined HR Operations<br>
+            &#128340; Real-time Attendance<br>
+            &#128202; Analytics Dashboard
+          </div>
+        </div>
+        <div style="flex:1;max-width:280px;">
+          <div style="font-size:1rem;font-weight:700;color:var(--gray-800);margin-bottom:16px;">Welcome Back</div>
+          <div class="form-mockup" style="margin:0;padding:0;border:none;">
+            <div class="fm-row">
+              <span class="fm-label">Email Address</span>
+              <div class="fm-input filled">john.doe@company.com</div>
+            </div>
+            <div class="fm-row">
+              <span class="fm-label">Password</span>
+              <div class="fm-input" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</span>
+                <span style="cursor:pointer;font-size:.9rem;">&#128065;</span>
+              </div>
+            </div>
+            <div class="btn-preview primary" style="width:100%;justify-content:center;margin:8px 0;">Sign In</div>
+            <div style="text-align:center;margin:8px 0;font-size:.72rem;color:var(--gray-400);">or</div>
+            <div class="btn-preview outline" style="width:100%;justify-content:center;margin:0;font-size:.78rem;">
+              <span style="font-size:1rem;">G</span> Sign in with Google
+            </div>
+            <div style="text-align:center;margin-top:10px;">
+              <span style="font-size:.75rem;color:var(--primary);font-weight:500;">Forgot Password?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Email &amp; Password Login</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Open the Login Page</h4>
+          <p>Navigate to the Pulse Ops URL provided by your organization. You will see the login screen with the company branding on the left and the login form on the right.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Enter Your Credentials</h4>
+          <p>Type your <strong>email address</strong> and <strong>password</strong> (minimum 6 characters) in the form fields. Use the eye icon next to the password field to toggle visibility.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Click &ldquo;Sign In&rdquo;</h4>
+          <p>Press the <strong>Sign In</strong> button. If your credentials are valid, you will be redirected to the Dashboard. If invalid, an error message will appear below the form.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Google Sign-In</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Click &ldquo;Sign in with Google&rdquo;</h4>
+          <p>Below the email/password form, click the Google sign-in button. A pop-up window will appear.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Authenticate with Google</h4>
+          <p>Select or enter your Google account. After authentication, the pop-up closes automatically and you are redirected to the Dashboard.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Forgot Password</h3>
+
+    <!-- Password Reset Flow Diagram -->
+    <div class="flow-diagram">
+      <div class="flow-node">
+        <div class="flow-icon" style="background:var(--primary-light);color:var(--primary);">&#9993;</div>
+        <div class="flow-label">Enter Email</div>
+        <div class="flow-sub">Step 1</div>
+      </div>
+      <div class="flow-arrow">&#10145;</div>
+      <div class="flow-node">
+        <div class="flow-icon" style="background:var(--warning-light);color:#b45309;">&#128172;</div>
+        <div class="flow-label">Receive OTP</div>
+        <div class="flow-sub">Check inbox</div>
+      </div>
+      <div class="flow-arrow">&#10145;</div>
+      <div class="flow-node">
+        <div class="flow-icon" style="background:var(--info-light);color:var(--info);">&#128273;</div>
+        <div class="flow-label">Verify Code</div>
+        <div class="flow-sub">6-digit OTP</div>
+      </div>
+      <div class="flow-arrow">&#10145;</div>
+      <div class="flow-node">
+        <div class="flow-icon" style="background:var(--success-light);color:var(--success);">&#128274;</div>
+        <div class="flow-label">New Password</div>
+        <div class="flow-sub">Min 6 chars</div>
+      </div>
+      <div class="flow-arrow">&#10145;</div>
+      <div class="flow-node">
+        <div class="flow-icon" style="background:#dcfce7;color:#16a34a;">&#9989;</div>
+        <div class="flow-label">Done!</div>
+        <div class="flow-sub">Login again</div>
+      </div>
+    </div>
+
+    <p>If you&rsquo;ve forgotten your password, follow these steps to reset it:</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Click &ldquo;Forgot Password?&rdquo;</h4>
+          <p>On the login page, click the <strong>Forgot Password?</strong> link below the sign-in button.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Enter Your Email</h4>
+          <p>Type the email address associated with your account and click <strong>Send OTP</strong>. A 6-digit verification code will be sent to your email.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Enter the OTP</h4>
+          <p>Check your inbox (and spam folder) for the code. Enter the 6-digit OTP on the verification screen and click <strong>Verify</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Set a New Password</h4>
+          <p>Create a new password and confirm it. Click <strong>Reset Password</strong>. On success, click <strong>Back to Login</strong> to sign in with your new credentials.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box warning">
+      <span class="info-icon">&#9888;&#65039;</span>
+      <div>If you do not receive the OTP email within a few minutes, check your spam/junk folder. Contact your system administrator if the problem persists.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: NAVIGATION                                           -->
+    <!-- ============================================================ -->
+    <h2 id="navigation">
+      <span class="section-icon" style="background:var(--primary-light);color:var(--primary);">&#129517;</span>
+      Navigation
+    </h2>
+    <p class="section-intro">Learn how to find your way around the Pulse Ops interface.</p>
+
+    <h3>Main Layout</h3>
+    <p>After logging in, the application displays three persistent regions:</p>
+
+    <!-- Visual Layout Diagram -->
+    <div class="layout-diagram">
+      <div class="ld-header">
+        <span>&#9776; &nbsp; Pulse Ops</span>
+        <span style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:.75rem;font-weight:400;">Hello, John</span>
+          <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;font-size:.7rem;">&#128276; 3</span>
+          <span style="width:28px;height:28px;background:rgba(255,255,255,.25);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;">JD</span>
+        </span>
+      </div>
+      <div class="ld-body">
+        <div class="ld-sidebar">
+          <div style="font-size:.65rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;padding:4px 10px 6px;">Menu</div>
+          <div class="ld-sidebar-item active">&#128202; Dashboard</div>
+          <div class="ld-sidebar-item">&#128227; Announcements</div>
+          <div class="ld-sidebar-item">&#9201; Attendance</div>
+          <div class="ld-sidebar-item">&#127796; Leave</div>
+          <div class="ld-sidebar-item">&#128197; Schedule</div>
+          <div class="ld-sidebar-item">&#128101; Users</div>
+          <div class="ld-sidebar-item">&#128176; Reimbursements</div>
+          <div class="ld-sidebar-item">&#128100; Profile</div>
+          <div class="ld-sidebar-item">&#9881; Settings</div>
+        </div>
+        <div class="ld-content">
+          <div class="ld-content-block" style="flex:0;padding:16px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe;color:var(--primary);">&#9201; Attendance Hero &mdash; Clock In / Clock Out / Break Controls</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;">
+            <div class="ld-content-block" style="padding:8px;">Stat Card</div>
+            <div class="ld-content-block" style="padding:8px;">Stat Card</div>
+            <div class="ld-content-block" style="padding:8px;">Stat Card</div>
+            <div class="ld-content-block" style="padding:8px;">Stat Card</div>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;flex:1;">
+            <div class="ld-content-block">Main Content Area</div>
+            <div class="ld-content-block">Sidebar Panel</div>
+          </div>
+        </div>
+      </div>
+      <div class="ld-footer">&copy; 2026 Pulse Ops &mdash; Footer</div>
+    </div>
+
+    <table class="doc-table">
+      <thead>
+        <tr><th>Region</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Header</strong></td>
+          <td>Displays the Pulse Ops logo, a greeting with your name, the notification bell (with unread count badge), and your profile avatar with a dropdown for <em>Profile</em>, <em>Settings</em>, and <em>Logout</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>Sidebar</strong></td>
+          <td>The left-hand navigation menu with links to every major module: Dashboard, Announcements, Attendance, Leave, Schedule, Users, Profile, Settings, and Reimbursements. The active page is highlighted.</td>
+        </tr>
+        <tr>
+          <td><strong>Content Area</strong></td>
+          <td>The central area where the active page&rsquo;s content is displayed. A footer with copyright info appears at the bottom.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box tip">
+      <span class="info-icon">&#9989;</span>
+      <div><strong>Mobile users:</strong> On smaller screens, the sidebar collapses. Tap the hamburger menu icon (&#9776;) in the top-left to open it. Tap outside the sidebar or select a link to close it.</div>
+    </div>
+
+    <h3>Announcement Marquee</h3>
+    <p>An animated scrolling banner at the top of the Dashboard displays the latest active announcements. Click on any announcement in the marquee to navigate to the Announcements page for full details.</p>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: DASHBOARD                                            -->
+    <!-- ============================================================ -->
+    <h2 id="dashboard">
+      <span class="section-icon" style="background:var(--primary-light);color:var(--primary);">&#128202;</span>
+      Dashboard
+    </h2>
+    <p class="section-intro">Your personal command center&mdash;a daily snapshot of your work status, quick actions, and activity timeline.</p>
+
+    <!-- Attendance State Flow -->
+    <h3>Attendance Controls</h3>
+    <div class="flow-diagram" style="flex-wrap:wrap;gap:8px;">
+      <div class="flow-node">
+        <div class="flow-icon" style="background:var(--gray-100);color:var(--gray-500);">&#128564;</div>
+        <div class="flow-label">Not Clocked In</div>
+      </div>
+      <div class="flow-arrow">&#10145;<br><span style="font-size:.6rem;color:var(--gray-400);">Clock In</span></div>
+      <div class="flow-node">
+        <div class="flow-icon" style="background:var(--success-light);color:var(--success);">&#128187;</div>
+        <div class="flow-label">Working</div>
+      </div>
+      <div class="flow-arrow">&#8644;<br><span style="font-size:.6rem;color:var(--gray-400);">Break</span></div>
+      <div class="flow-node">
+        <div class="flow-icon" style="background:var(--warning-light);color:#b45309;">&#9749;</div>
+        <div class="flow-label">On Break</div>
+      </div>
+      <div style="width:100%;display:flex;justify-content:center;margin-top:4px;">
+        <div class="flow-arrow">&#11015;<span style="font-size:.6rem;color:var(--gray-400);"> Clock Out</span></div>
+      </div>
+      <div class="flow-node" style="margin-top:-4px;">
+        <div class="flow-icon" style="background:var(--danger-light);color:var(--danger);">&#128721;</div>
+        <div class="flow-label">Clocked Out</div>
+      </div>
+    </div>
+
+    <p>At the top of the Dashboard is the <strong>Attendance Hero</strong> panel, which provides quick access to your daily attendance actions:</p>
+    <table class="doc-table">
+      <thead>
+        <tr><th>Button</th><th>Action</th><th>When Available</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Clock In</strong></td><td>Starts your work session for the day.</td><td>When you are not clocked in.</td></tr>
+        <tr><td><strong>Clock Out</strong></td><td>Ends your work session. A confirmation modal appears.</td><td>When you are clocked in and not on break.</td></tr>
+        <tr><td><strong>Start Break</strong></td><td>Begins a break period, pausing your working time.</td><td>When you are clocked in and not already on break.</td></tr>
+        <tr><td><strong>Resume Work</strong></td><td>Ends the current break and resumes working time.</td><td>When you are on an active break.</td></tr>
+      </tbody>
+    </table>
+
+    <p>The hero panel also shows your <strong>current status</strong> (e.g., &ldquo;Working&rdquo;, &ldquo;On Break&rdquo;, &ldquo;Not Clocked In&rdquo;), your <strong>working hours</strong>, and <strong>break duration</strong> for the current session.</p>
+
+    <h3>Statistics Cards</h3>
+    <p>Below the attendance controls, four summary cards provide at-a-glance metrics:</p>
+
+    <!-- Visual Stat Card Previews -->
+    <div class="stat-preview-grid">
+      <div class="stat-preview" style="border-left-color:var(--primary);">
+        <div class="sp-label">&#9201; Total Working Hours</div>
+        <div class="sp-value">7h 24m</div>
+        <div class="sp-trend" style="color:var(--success);">&#9650; 12% from yesterday</div>
+      </div>
+      <div class="stat-preview" style="border-left-color:var(--warning);">
+        <div class="sp-label">&#9749; Total Breaks</div>
+        <div class="sp-value">2</div>
+        <div class="sp-trend" style="color:var(--gray-400);">sessions today</div>
+      </div>
+      <div class="stat-preview" style="border-left-color:var(--info);">
+        <div class="sp-label">&#9202; Break Duration</div>
+        <div class="sp-value">45m</div>
+        <div class="sp-trend" style="color:var(--gray-400);">total break time</div>
+      </div>
+      <div class="stat-preview" style="border-left-color:var(--success);">
+        <div class="sp-label">&#128200; Productivity</div>
+        <div class="sp-value">94%</div>
+        <div class="sp-trend" style="color:var(--success);">excellent</div>
+      </div>
+    </div>
+
+    <h3>Recent Activity Timeline</h3>
+    <p>A scrollable timeline on the right side of the Dashboard shows your activities from the current day in reverse chronological order (newest first). Each activity entry includes:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li>A color-coded icon indicating the type (clock in/out, break, reimbursement, announcement)</li>
+      <li>The time the activity occurred</li>
+      <li>A title and brief description</li>
+    </ul>
+
+    <h3>Quick Summary</h3>
+    <p>A sidebar panel on the Dashboard shows:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li><strong>Shift Type</strong> &mdash; Your assigned shift category</li>
+      <li><strong>Weekly Off</strong> &mdash; Your scheduled off-days</li>
+      <li><strong>Monthly Attendance</strong> &mdash; A progress bar showing your attendance percentage for the month</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: ATTENDANCE                                           -->
+    <!-- ============================================================ -->
+    <h2 id="attendance">
+      <span class="section-icon" style="background:var(--info-light);color:var(--info);">&#9201;</span>
+      Attendance
+    </h2>
+    <p class="section-intro">Track your daily clock-in/out, breaks, and view weekly &amp; monthly attendance summaries.</p>
+
+    <h3>Daily Attendance Controls</h3>
+    <p>The Attendance page shares the same <strong>Attendance Hero</strong> controls as the Dashboard (Clock In, Clock Out, Start Break, Resume Work). See the <a href="#dashboard">Dashboard</a> section above for details.</p>
+
+    <h3>Today&rsquo;s Statistics</h3>
+    <p>Four stat cards show your attendance metrics for today:</p>
+    <table class="doc-table">
+      <thead><tr><th>Card</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Today&rsquo;s Hours</strong></td><td>Net working time for today.</td></tr>
+        <tr><td><strong>Total Breaks</strong></td><td>Break duration and count for today.</td></tr>
+        <tr><td><strong>Working Days</strong></td><td>Number of working days completed this month.</td></tr>
+        <tr><td><strong>Monthly Target</strong></td><td>Remaining target hours for the month.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Today&rsquo;s Details</h3>
+    <p>A detailed card shows granular information about the current day&rsquo;s session:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li><strong>Date</strong> &mdash; Today&rsquo;s date</li>
+      <li><strong>Current Status</strong> &mdash; Color-coded badge (Working, On Break, Not Clocked In)</li>
+      <li><strong>Last Action</strong> &mdash; Time of your most recent attendance action</li>
+      <li><strong>Net Working Time</strong> &mdash; Total working time minus breaks</li>
+      <li><strong>Break Duration &amp; Count</strong> &mdash; Total break time and number of breaks taken</li>
+    </ul>
+
+    <h3>Weekly Summary</h3>
+    <p>A 7-day breakdown (Monday through Sunday) displays your attendance status for each day of the current week. Days are color-coded:</p>
+
+    <!-- Visual Weekly Grid -->
+    <div class="week-grid">
+      <div class="week-day" style="background:var(--success-light);">
+        <div class="wd-name">Mon</div>
+        <div class="wd-hours" style="color:var(--success);">8h 12m</div>
+        <div class="wd-status" style="color:var(--success);">Present</div>
+      </div>
+      <div class="week-day" style="background:var(--success-light);">
+        <div class="wd-name">Tue</div>
+        <div class="wd-hours" style="color:var(--success);">7h 48m</div>
+        <div class="wd-status" style="color:var(--success);">Present</div>
+      </div>
+      <div class="week-day" style="background:var(--danger-light);">
+        <div class="wd-name">Wed</div>
+        <div class="wd-hours" style="color:var(--danger);">&mdash;</div>
+        <div class="wd-status" style="color:var(--danger);">Sick Leave</div>
+      </div>
+      <div class="week-day" style="background:var(--success-light);">
+        <div class="wd-name">Thu</div>
+        <div class="wd-hours" style="color:var(--success);">8h 05m</div>
+        <div class="wd-status" style="color:var(--success);">Present</div>
+      </div>
+      <div class="week-day" style="background:var(--info-light);border-color:var(--info);">
+        <div class="wd-name" style="color:var(--info);">Fri</div>
+        <div class="wd-hours" style="color:var(--info);">4h 30m</div>
+        <div class="wd-status" style="color:var(--info);">Today</div>
+      </div>
+      <div class="week-day" style="background:var(--warning-light);">
+        <div class="wd-name">Sat</div>
+        <div class="wd-hours" style="color:#b45309;">Off</div>
+        <div class="wd-status" style="color:#b45309;">Weekly Off</div>
+      </div>
+      <div class="week-day" style="background:var(--warning-light);">
+        <div class="wd-name">Sun</div>
+        <div class="wd-hours" style="color:#b45309;">Off</div>
+        <div class="wd-status" style="color:#b45309;">Weekly Off</div>
+      </div>
+    </div>
+
+    <table class="doc-table">
+      <thead><tr><th>Color</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-info">Blue</span></td><td>Today&rsquo;s current working hours</td></tr>
+        <tr><td><span class="badge badge-success">Green</span></td><td>Present (completed working day)</td></tr>
+        <tr><td><span class="badge badge-danger">Red</span></td><td>Leave or Absent</td></tr>
+        <tr><td><span class="badge badge-warning">Orange</span></td><td>Off Day (weekly off)</td></tr>
+        <tr><td><span class="badge" style="background:#f3e8ff;color:#7c3aed;">Purple</span></td><td>Holiday</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Incomplete Shift Correction</h3>
+    <p>If the system detects that you forgot to clock out from a previous session, an <strong>Incomplete Shift</strong> modal will appear when you next log in. You can provide the correct logout time and a reason to fix the record.</p>
+
+    <div class="info-box warning">
+      <span class="info-icon">&#9888;&#65039;</span>
+      <div>Always remember to clock out at the end of your shift. If you forget, the system will prompt you on your next login, but it is best practice to clock out regularly.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: LEAVE                                                -->
+    <!-- ============================================================ -->
+    <h2 id="leave">
+      <span class="section-icon" style="background:var(--success-light);color:var(--success);">&#127796;</span>
+      Leave Management
+    </h2>
+    <p class="section-intro">Apply for leave, track your balances, and monitor the status of your requests.</p>
+
+    <h3>Leave Balance Overview</h3>
+    <p>At the top of the Leave page, a hero section shows your <strong>available days remaining</strong> and <strong>total days taken</strong>. Below it, four stat cards summarize:</p>
+    <table class="doc-table">
+      <thead><tr><th>Card</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Available Balance</strong></td><td>Total leave days you can still use.</td></tr>
+        <tr><td><strong>Approved Leaves</strong></td><td>Number of approved leave requests.</td></tr>
+        <tr><td><strong>Pending Requests</strong></td><td>Requests awaiting manager/HR approval.</td></tr>
+        <tr><td><strong>Total Allocated</strong></td><td>Total leave days assigned to you for the year.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Leave Balance Breakdown</h3>
+    <p>A card displays all your leave types with details for each:</p>
+    <table class="doc-table">
+      <thead><tr><th>Leave Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-primary">Annual</span></td><td>Paid vacation days for personal use.</td></tr>
+        <tr><td><span class="badge badge-warning">Sick</span></td><td>Days for illness or medical appointments.</td></tr>
+        <tr><td><span class="badge badge-info">Personal</span></td><td>Days for personal errands or events.</td></tr>
+        <tr><td><span class="badge badge-gray">Unpaid</span></td><td>Leave without pay when paid leave is exhausted.</td></tr>
+        <tr><td><span class="badge" style="background:#fce7f3;color:#be185d;">Maternity</span></td><td>Leave for childbirth and postnatal care.</td></tr>
+        <tr><td><span class="badge" style="background:#f3e8ff;color:#7c3aed;">Paternity</span></td><td>Leave for new fathers.</td></tr>
+        <tr><td><span class="badge badge-danger">Bereavement</span></td><td>Leave for the loss of a family member.</td></tr>
+        <tr><td><span class="badge badge-success">Compensatory</span></td><td>Earned time off for extra work or overtime.</td></tr>
+      </tbody>
+    </table>
+    <p>Each type shows a progress bar indicating <strong>used / total allocated</strong> days and your current available balance.</p>
+
+    <h3>Applying for Leave</h3>
+
+    <!-- Leave Form Mockup -->
+    <div class="ui-mockup">
+      <div class="mockup-titlebar">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+        <div class="mockup-url">Apply Leave &mdash; Modal Dialog</div>
+      </div>
+      <div class="mockup-body">
+        <div style="font-size:.95rem;font-weight:700;color:var(--gray-800);margin-bottom:16px;">Apply for Leave</div>
+        <div style="font-size:.78rem;font-weight:600;color:var(--gray-500);margin-bottom:8px;">Select Leave Type</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">
+          <div style="border:2px solid var(--primary);background:var(--primary-light);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:1.1rem;">&#127796;</div>
+            <div style="font-size:.72rem;font-weight:700;color:var(--primary);">Annual</div>
+            <div style="font-size:.65rem;color:var(--gray-400);">12 days left</div>
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:1.1rem;">&#129298;</div>
+            <div style="font-size:.72rem;font-weight:600;color:var(--gray-600);">Sick</div>
+            <div style="font-size:.65rem;color:var(--gray-400);">5 days left</div>
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:1.1rem;">&#128188;</div>
+            <div style="font-size:.72rem;font-weight:600;color:var(--gray-600);">Personal</div>
+            <div style="font-size:.65rem;color:var(--gray-400);">3 days left</div>
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:8px;padding:10px;text-align:center;opacity:.5;">
+            <div style="font-size:1.1rem;">&#128181;</div>
+            <div style="font-size:.72rem;font-weight:600;color:var(--gray-600);">Unpaid</div>
+            <div style="font-size:.65rem;color:var(--gray-400);">Unlimited</div>
+          </div>
+        </div>
+        <div class="form-mockup" style="margin:0;padding:0;border:none;">
+          <div class="fm-grid">
+            <div class="fm-row"><span class="fm-label">Start Date</span><div class="fm-input filled">Feb 20, 2026</div></div>
+            <div class="fm-row"><span class="fm-label">End Date</span><div class="fm-input filled">Feb 22, 2026</div></div>
+          </div>
+          <div class="fm-row" style="margin-top:6px;">
+            <span class="fm-label">Reason</span>
+            <div class="fm-input filled" style="min-height:48px;">Family vacation planned for the weekend</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end;">
+            <div class="btn-preview ghost">Cancel</div>
+            <div class="btn-preview primary">Submit Request</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leave Status Pipeline -->
+    <div style="margin:20px 0 12px;font-size:.85rem;font-weight:600;color:var(--gray-700);">Leave Request Lifecycle:</div>
+    <div class="status-pipeline">
+      <div class="pipeline-stage" style="background:var(--primary-light);color:var(--primary);">
+        <div class="stage-dot" style="background:var(--primary);"></div>
+        Submitted
+      </div>
+      <div class="pipeline-arrow">&#10145;</div>
+      <div class="pipeline-stage" style="background:var(--warning-light);color:#b45309;">
+        <div class="stage-dot" style="background:var(--warning);"></div>
+        Pending Review
+      </div>
+      <div class="pipeline-arrow">&#10145;</div>
+      <div class="pipeline-stage" style="background:var(--success-light);color:var(--success);">
+        <div class="stage-dot" style="background:var(--success);"></div>
+        Approved
+      </div>
+      <div style="color:var(--gray-300);padding:0 6px;font-size:.75rem;">or</div>
+      <div class="pipeline-stage" style="background:var(--danger-light);color:var(--danger);">
+        <div class="stage-dot" style="background:var(--danger);"></div>
+        Rejected
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Click &ldquo;Apply Leave&rdquo;</h4>
+          <p>Click the <strong>Apply Leave</strong> button at the top of the Leave page. A modal form will open.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Select Leave Type</h4>
+          <p>Choose the type of leave from the grid of available options. Each option shows its remaining balance. Types with zero balance cannot be selected (except unpaid leave).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Choose Dates</h4>
+          <p>Select a <strong>Start Date</strong> and <strong>End Date</strong>. The system automatically calculates the number of working days, excluding holidays and your weekly off-days. For a single day, toggle <strong>Half Day</strong> and select First Half or Second Half.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Provide a Reason</h4>
+          <p>Enter a reason for your leave in the text area. This is a required field.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Attach Files (Optional)</h4>
+          <p>If your leave type requires supporting documents (e.g., a medical certificate for sick leave), click <strong>Attach File</strong> to upload. Each file must be under 5 MB.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Submit</h4>
+          <p>Review your request details and click <strong>Submit</strong>. Your request will appear in the <em>My Requests</em> table with a <span class="badge badge-warning">Pending</span> status.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>My Requests Table</h3>
+    <p>The table displays all your leave requests with the following columns:</p>
+    <table class="doc-table">
+      <thead><tr><th>Column</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Leave Type</strong></td><td>The category of leave with a colored icon.</td></tr>
+        <tr><td><strong>Date Range</strong></td><td>Start and end dates. Half-day requests show &ldquo;(Half Day)&rdquo;.</td></tr>
+        <tr><td><strong>Days</strong></td><td>Number of working days requested.</td></tr>
+        <tr><td><strong>Attachments</strong></td><td>Number of attached files.</td></tr>
+        <tr><td><strong>Status</strong></td><td><span class="badge badge-warning">Pending</span>, <span class="badge badge-success">Approved</span>, <span class="badge badge-danger">Rejected</span>, or <span class="badge badge-gray">Cancelled</span>.</td></tr>
+        <tr><td><strong>Actions</strong></td><td>A <strong>Cancel</strong> button is available for pending requests only.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box tip">
+      <span class="info-icon">&#9989;</span>
+      <div>If a leave request is rejected, hover over the status badge to see the rejection reason provided by your manager or HR.</div>
+    </div>
+
+    <h3>Leave Policies</h3>
+    <p>A sidebar card on the Leave page lists all leave policies configured by your organization, including:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li>Default allocation per leave type</li>
+      <li>Reset frequency (annual, monthly, etc.)</li>
+      <li>Whether carry-forward is allowed</li>
+      <li>Maximum carry-forward days</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: SCHEDULE                                             -->
+    <!-- ============================================================ -->
+    <h2 id="schedule">
+      <span class="section-icon" style="background:var(--warning-light);color:#b45309;">&#128197;</span>
+      Schedule
+    </h2>
+    <p class="section-intro">View your weekly shift roster, holidays, off-days, and leaves in one place.</p>
+
+    <h3>Today&rsquo;s Shift</h3>
+
+    <!-- Shift Hero Card Preview -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0;">
+      <div style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);border:1px solid #93c5fd;border-radius:12px;padding:18px;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">&#128340;</div>
+        <div style="font-size:.8rem;font-weight:700;color:#1e40af;">Regular Day</div>
+        <div style="font-size:.72rem;color:#3b82f6;margin-top:4px;">9:00 AM &ndash; 6:00 PM</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fcd34d;border-radius:12px;padding:18px;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">&#9728;&#65039;</div>
+        <div style="font-size:.8rem;font-weight:700;color:#92400e;">Holiday</div>
+        <div style="font-size:.72rem;color:#b45309;margin-top:4px;">Republic Day</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#f3e8ff,#e9d5ff);border:1px solid #c084fc;border-radius:12px;padding:18px;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">&#9748;</div>
+        <div style="font-size:.8rem;font-weight:700;color:#6b21a8;">On Leave</div>
+        <div style="font-size:.72rem;color:#7c3aed;margin-top:4px;">Annual Leave</div>
+      </div>
+    </div>
+
+    <p>A hero card at the top shows your shift for today, color-coded by status:</p>
+    <table class="doc-table">
+      <thead><tr><th>Color</th><th>Status</th><th>Details Shown</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-info">Blue</span></td><td>Regular working day</td><td>Shift start and end times</td></tr>
+        <tr><td><span class="badge badge-warning">Orange</span></td><td>Holiday</td><td>Holiday name</td></tr>
+        <tr><td><span class="badge" style="background:#f3e8ff;color:#7c3aed;">Purple</span></td><td>On Leave</td><td>Leave type and reason</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Weekly Schedule Table</h3>
+
+    <!-- Schedule Visual Preview -->
+    <div class="ui-mockup">
+      <div class="mockup-titlebar">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+        <div class="mockup-url">&#8592; Feb 10 &ndash; Feb 16, 2026 &#8594;</div>
+      </div>
+      <div class="mockup-body" style="padding:12px;">
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+          <thead>
+            <tr style="background:var(--gray-100);">
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--gray-500);font-size:.7rem;text-transform:uppercase;">Day</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--gray-500);font-size:.7rem;text-transform:uppercase;">Date</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--gray-500);font-size:.7rem;text-transform:uppercase;">Shift</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--gray-500);font-size:.7rem;text-transform:uppercase;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:8px 12px;font-weight:600;">Mon</td><td style="padding:8px 12px;">Feb 10</td><td style="padding:8px 12px;">9:00 AM &ndash; 6:00 PM</td><td style="padding:8px 12px;"><span class="badge badge-success">Present</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:8px 12px;font-weight:600;">Tue</td><td style="padding:8px 12px;">Feb 11</td><td style="padding:8px 12px;">9:00 AM &ndash; 6:00 PM</td><td style="padding:8px 12px;"><span class="badge badge-success">Present</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-100);background:#fff7ed;"><td style="padding:8px 12px;font-weight:600;color:#b45309;">Wed</td><td style="padding:8px 12px;color:#b45309;">Feb 12</td><td style="padding:8px 12px;color:#b45309;">Holiday</td><td style="padding:8px 12px;"><span class="badge badge-warning">Holiday</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:8px 12px;font-weight:600;">Thu</td><td style="padding:8px 12px;">Feb 13</td><td style="padding:8px 12px;">9:00 AM &ndash; 6:00 PM</td><td style="padding:8px 12px;"><span class="badge badge-success">Present</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-100);background:var(--info-light);"><td style="padding:8px 12px;font-weight:600;color:var(--info);">Fri</td><td style="padding:8px 12px;color:var(--info);">Feb 14</td><td style="padding:8px 12px;color:var(--info);">9:00 AM &ndash; 6:00 PM</td><td style="padding:8px 12px;"><span class="badge badge-info">Today</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-100);background:var(--gray-50);"><td style="padding:8px 12px;font-weight:600;color:var(--gray-400);">Sat</td><td style="padding:8px 12px;color:var(--gray-400);">Feb 15</td><td style="padding:8px 12px;color:var(--gray-400);">&mdash;</td><td style="padding:8px 12px;"><span class="badge badge-gray">Off</span></td></tr>
+            <tr style="background:var(--gray-50);"><td style="padding:8px 12px;font-weight:600;color:var(--gray-400);">Sun</td><td style="padding:8px 12px;color:var(--gray-400);">Feb 16</td><td style="padding:8px 12px;color:var(--gray-400);">&mdash;</td><td style="padding:8px 12px;"><span class="badge badge-gray">Off</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p>The main table shows all 7 days of the week (Monday&ndash;Sunday) with:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li>Day abbreviation and date</li>
+      <li>Shift start and end times</li>
+      <li>Status indicators: <span class="badge badge-info">Today</span>, <span class="badge badge-gray">Off</span>, <span class="badge badge-warning">Holiday</span>, <span class="badge" style="background:#f3e8ff;color:#7c3aed;">On Leave</span></li>
+      <li>Color-coded rows for easy scanning</li>
+    </ul>
+
+    <h3>Week Navigation</h3>
+    <p>Use the <strong>&larr; Previous</strong> and <strong>Next &rarr;</strong> buttons at the top of the schedule to navigate between weeks. The current week range is displayed between the buttons (e.g., &ldquo;Feb 10 &ndash; Feb 16, 2026&rdquo;).</p>
+
+    <h3>Summary Card</h3>
+    <p>A sidebar summary shows:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li><strong>Working Days</strong> &mdash; Number of working days in the displayed week</li>
+      <li><strong>Regular Shift</strong> &mdash; Your standard shift description (e.g., &ldquo;9:00 AM &ndash; 6:00 PM&rdquo;)</li>
+      <li><strong>Weekly Off</strong> &mdash; Number of off-days this week</li>
+      <li><strong>Work Location</strong> &mdash; Your assigned workplace</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: ANNOUNCEMENTS                                        -->
+    <!-- ============================================================ -->
+    <h2 id="announcements">
+      <span class="section-icon" style="background:var(--info-light);color:var(--info);">&#128227;</span>
+      Announcements
+    </h2>
+    <p class="section-intro">View company-wide communications, acknowledge important notices, and stay up to date.</p>
+
+    <!-- Announcement Preview Mockup -->
+    <div class="ui-mockup">
+      <div class="mockup-titlebar">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+        <div class="mockup-url">app.pulseops.com/announcements</div>
+      </div>
+      <div class="mockup-body" style="padding:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:.95rem;font-weight:700;color:var(--gray-800);">&#128227; Announcements</div>
+          <span class="badge badge-primary" style="font-size:.7rem;">3 unread</span>
+        </div>
+        <!-- Sample rows -->
+        <div style="border:1px solid var(--gray-200);border-radius:8px;overflow:hidden;font-size:.78rem;">
+          <div style="display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--gray-100);gap:12px;">
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--gray-800);">Office Closure for National Holiday</div>
+              <div style="color:var(--gray-400);font-size:.7rem;margin-top:2px;">The office will be closed on Feb 26th for...</div>
+            </div>
+            <span class="badge badge-info" style="font-size:.65rem;">Holiday</span>
+            <span class="badge badge-danger" style="font-size:.65rem;">High</span>
+            <span style="color:var(--gray-400);font-size:.7rem;white-space:nowrap;">Expires in 11 days</span>
+            <span class="btn-preview primary" style="padding:4px 10px;font-size:.65rem;margin:0;">Acknowledge</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--gray-100);gap:12px;">
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--gray-800);">Updated Leave Policy 2026</div>
+              <div style="color:var(--gray-400);font-size:.7rem;margin-top:2px;">Please review the updated leave policy...</div>
+            </div>
+            <span class="badge badge-primary" style="font-size:.65rem;">Policy</span>
+            <span class="badge badge-warning" style="font-size:.65rem;">Medium</span>
+            <span style="color:var(--gray-400);font-size:.7rem;white-space:nowrap;">No Expiry</span>
+            <span class="btn-preview ghost" style="padding:4px 10px;font-size:.65rem;margin:0;">View</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:10px 14px;gap:12px;">
+            <div style="flex:1;">
+              <div style="font-weight:600;color:var(--gray-800);">Annual Team Building Event</div>
+              <div style="color:var(--gray-400);font-size:.7rem;margin-top:2px;">Join us for the annual team building at...</div>
+            </div>
+            <span class="badge badge-success" style="font-size:.65rem;">Event</span>
+            <span class="badge badge-info" style="font-size:.65rem;">Low</span>
+            <span style="color:var(--gray-400);font-size:.7rem;white-space:nowrap;">Expires in 30 days</span>
+            <span class="btn-preview ghost" style="padding:4px 10px;font-size:.65rem;margin:0;">View</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Announcements Table</h3>
+    <p>The page lists all announcements in a paginated table with the following columns:</p>
+    <table class="doc-table">
+      <thead><tr><th>Column</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Title</strong></td><td>The announcement headline with a content preview excerpt.</td></tr>
+        <tr><td><strong>Category</strong></td><td>A badge indicating the type: <span class="badge badge-info">Holiday</span>, <span class="badge badge-primary">Policy</span>, <span class="badge badge-success">Event</span>, or <span class="badge badge-gray">General</span>.</td></tr>
+        <tr><td><strong>Priority</strong></td><td><span class="badge badge-danger">High</span>, <span class="badge badge-warning">Medium</span>, or <span class="badge badge-info">Low</span>.</td></tr>
+        <tr><td><strong>Expiry</strong></td><td>Shows &ldquo;Expires in X days&rdquo;, &ldquo;Expires Today&rdquo; (red), &ldquo;Expired&rdquo; (red), or &ldquo;No Expiry&rdquo;.</td></tr>
+        <tr><td><strong>Published By</strong></td><td>Author name with initials avatar.</td></tr>
+        <tr><td><strong>Date</strong></td><td>Publication date in your local timezone.</td></tr>
+        <tr><td><strong>Actions</strong></td><td><strong>View</strong> to open details; <strong>Acknowledge</strong> if acknowledgment is required and the announcement has not expired.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Viewing an Announcement</h3>
+    <p>Click <strong>View</strong> on any row to open a detail modal showing the full announcement content, priority badge, category, author, publication date, and status. If acknowledgment is required and the announcement is still active, an <strong>Acknowledge</strong> button appears in the modal.</p>
+
+    <h3>Acknowledging Announcements</h3>
+    <p>Some announcements require employees to explicitly confirm they have read the notice. Click the <strong>Acknowledge</strong> button either in the table row or in the detail modal. Once acknowledged, the button will no longer appear for that announcement.</p>
+
+    <div class="info-box info">
+      <span class="info-icon">&#128161;</span>
+      <div>Announcements also appear as a scrolling marquee banner on the Dashboard so you never miss important updates.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: NOTIFICATIONS                                        -->
+    <!-- ============================================================ -->
+    <h2 id="notifications">
+      <span class="section-icon" style="background:var(--warning-light);color:#b45309;">&#128276;</span>
+      Notifications
+    </h2>
+    <p class="section-intro">Pulse Ops keeps you informed through in-app badges and optional push notifications.</p>
+
+    <h3>Notification Bell</h3>
+
+    <!-- Notification Visual -->
+    <div class="card" style="display:flex;align-items:center;gap:24px;">
+      <div style="position:relative;display:inline-block;">
+        <div style="width:48px;height:48px;background:var(--gray-100);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">&#128276;</div>
+        <div style="position:absolute;top:-4px;right:-4px;background:var(--danger);color:white;font-size:.6rem;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;">5</div>
+      </div>
+      <div>
+        <div style="font-size:.85rem;font-weight:600;color:var(--gray-800);margin-bottom:6px;">Notification categories tracked:</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="badge badge-info" style="font-size:.72rem;">&#128227; Announcements (2)</span>
+          <span class="badge badge-success" style="font-size:.72rem;">&#127796; Leave Updates (1)</span>
+          <span class="badge badge-warning" style="font-size:.72rem;">&#128176; Reimbursements (2)</span>
+        </div>
+      </div>
+    </div>
+
+    <p>The notification bell icon in the header displays a badge with the total count of unread items across announcements, leave updates, and reimbursement updates. Click the bell to navigate to the relevant sections.</p>
+
+    <h3>Push Notifications</h3>
+    <p>When you first log in, you may see a <strong>Notification Permission</strong> modal asking to enable browser push notifications. If you allow it:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li>You will receive real-time desktop notifications for new announcements, leave approvals/rejections, and reimbursement status changes.</li>
+      <li>Notifications appear even when the browser tab is in the background.</li>
+    </ul>
+
+    <div class="info-box tip">
+      <span class="info-icon">&#9989;</span>
+      <div>You can manage push notification preferences at any time from the <a href="#settings">Settings</a> page under <em>Notifications</em>.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: REIMBURSEMENTS                                       -->
+    <!-- ============================================================ -->
+    <h2 id="reimbursements">
+      <span class="section-icon" style="background:var(--danger-light);color:var(--danger);">&#128176;</span>
+      Reimbursements
+    </h2>
+    <p class="section-intro">Submit expense claims, attach receipts, and track approval status.</p>
+
+    <h3>Overview</h3>
+    <p>The hero section at the top shows your <strong>total settled amount</strong>. Below it, four stat cards display:</p>
+    <table class="doc-table">
+      <thead><tr><th>Card</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Total Requests</strong></td><td>All reimbursement claims you have submitted.</td></tr>
+        <tr><td><strong>Pending Approvals</strong></td><td>Claims awaiting manager/HR review.</td></tr>
+        <tr><td><strong>Approved Claims</strong></td><td>Claims that have been approved for payment.</td></tr>
+        <tr><td><strong>Rejected / Cancelled</strong></td><td>Claims that were denied or that you cancelled.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Reimbursement Stat Previews -->
+    <div class="stat-preview-grid">
+      <div class="stat-preview" style="border-left-color:var(--primary);">
+        <div class="sp-label">&#128203; Total Requests</div>
+        <div class="sp-value">14</div>
+      </div>
+      <div class="stat-preview" style="border-left-color:var(--warning);">
+        <div class="sp-label">&#9203; Pending</div>
+        <div class="sp-value">3</div>
+      </div>
+      <div class="stat-preview" style="border-left-color:var(--success);">
+        <div class="sp-label">&#9989; Approved</div>
+        <div class="sp-value">9</div>
+      </div>
+      <div class="stat-preview" style="border-left-color:var(--danger);">
+        <div class="sp-label">&#10060; Rejected</div>
+        <div class="sp-value">2</div>
+      </div>
+    </div>
+
+    <!-- Reimbursement Status Pipeline -->
+    <div style="margin:16px 0 8px;font-size:.85rem;font-weight:600;color:var(--gray-700);">Reimbursement Request Lifecycle:</div>
+    <div class="status-pipeline">
+      <div class="pipeline-stage" style="background:var(--primary-light);color:var(--primary);">
+        <div class="stage-dot" style="background:var(--primary);"></div>
+        Submit Claim
+      </div>
+      <div class="pipeline-arrow">&#10145;</div>
+      <div class="pipeline-stage" style="background:var(--warning-light);color:#b45309;">
+        <div class="stage-dot" style="background:var(--warning);"></div>
+        Under Review
+      </div>
+      <div class="pipeline-arrow">&#10145;</div>
+      <div class="pipeline-stage" style="background:var(--success-light);color:var(--success);">
+        <div class="stage-dot" style="background:var(--success);"></div>
+        Approved &amp; Settled
+      </div>
+      <div style="color:var(--gray-300);padding:0 6px;font-size:.75rem;">or</div>
+      <div class="pipeline-stage" style="background:var(--danger-light);color:var(--danger);">
+        <div class="stage-dot" style="background:var(--danger);"></div>
+        Rejected
+      </div>
+    </div>
+
+    <h3>Submitting a Reimbursement</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Click &ldquo;New Request&rdquo;</h4>
+          <p>Click the <strong>New Request</strong> button. A form modal will open.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Fill in Details</h4>
+          <p>Provide the following:</p>
+          <ul style="margin:4px 0 0 16px;">
+            <li><strong>Title</strong> &mdash; A short description of the expense (e.g., &ldquo;Client lunch meeting&rdquo;).</li>
+            <li><strong>Type</strong> &mdash; Select from the dropdown (e.g., Travel, Meals, Office Supplies). The selected type shows its rules, including maximum reimbursable amount and whether a receipt is required.</li>
+            <li><strong>Amount</strong> &mdash; The expense amount. Must not exceed the maximum allowed for the selected type.</li>
+            <li><strong>Expense Date</strong> &mdash; The date the expense was incurred.</li>
+            <li><strong>Description</strong> &mdash; Additional details about the expense.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Attach Receipts</h4>
+          <p>Click the upload area to attach receipt files. Accepted formats: <code>PDF</code>, <code>JPG</code>, <code>JPEG</code>, <code>PNG</code>, <code>DOC</code>, <code>DOCX</code>. Each file must be under <strong>1 MB</strong> and the total must not exceed <strong>5 MB</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Submit</h4>
+          <p>Review your entry and click <strong>Submit</strong>. The request appears in the table with a <span class="badge badge-warning">Pending</span> status.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Requests Table</h3>
+    <table class="doc-table">
+      <thead><tr><th>Column</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Date</strong></td><td>The date of the expense.</td></tr>
+        <tr><td><strong>Title &amp; Type</strong></td><td>Expense title, category, and file attachment count badge.</td></tr>
+        <tr><td><strong>Amount</strong></td><td>The expense amount in your configured currency.</td></tr>
+        <tr><td><strong>Status</strong></td><td><span class="badge badge-warning">Pending</span>, <span class="badge badge-success">Approved</span>, <span class="badge badge-danger">Rejected</span>, or <span class="badge badge-gray">Cancelled</span>.</td></tr>
+        <tr><td><strong>Actions</strong></td><td><strong>Edit</strong> and <strong>Delete</strong> buttons available for <span class="badge badge-warning">Pending</span> requests only.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box warning">
+      <span class="info-icon">&#9888;&#65039;</span>
+      <div>You can only edit or delete reimbursement requests that are in <strong>Pending</strong> status. Once approved or rejected, no changes can be made.</div>
+    </div>
+
+    <h3>Editing a Request</h3>
+    <p>Click the <strong>Edit</strong> icon on a pending request to re-open the form with pre-filled data. Modify any fields, add or remove attachments, and click <strong>Submit</strong> to save changes.</p>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: USERS                                                -->
+    <!-- ============================================================ -->
+    <h2 id="users">
+      <span class="section-icon" style="background:#f3e8ff;color:#7c3aed;">&#128101;</span>
+      User Management
+    </h2>
+    <p class="section-intro">View, create, edit, and manage employee accounts (available to Admin and HR roles).</p>
+
+    <h3>User List</h3>
+
+    <!-- User List Mockup -->
+    <div class="ui-mockup">
+      <div class="mockup-titlebar">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+        <div class="mockup-url">app.pulseops.com/users</div>
+      </div>
+      <div class="mockup-body" style="padding:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div class="fm-input" style="width:250px;font-size:.75rem;padding:6px 12px;display:flex;align-items:center;gap:6px;">
+            <span>&#128269;</span> <span style="color:var(--gray-400);">Search by name or email...</span>
+          </div>
+          <div class="btn-preview primary" style="padding:6px 14px;font-size:.75rem;margin:0;">+ Add User</div>
+        </div>
+        <div style="border:1px solid var(--gray-200);border-radius:8px;overflow:hidden;font-size:.78rem;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr style="background:var(--gray-100);">
+                <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--gray-500);font-weight:600;">Name</th>
+                <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--gray-500);font-weight:600;">Role</th>
+                <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--gray-500);font-weight:600;">Department</th>
+                <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--gray-500);font-weight:600;">Status</th>
+                <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--gray-500);font-weight:600;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--gray-100);">
+                <td style="padding:8px 12px;"><span style="font-weight:600;color:var(--primary);">John Doe</span></td>
+                <td style="padding:8px 12px;"><span class="badge badge-primary" style="font-size:.65rem;">Admin</span></td>
+                <td style="padding:8px 12px;">Engineering</td>
+                <td style="padding:8px 12px;"><span class="badge badge-success" style="font-size:.65rem;">Active</span></td>
+                <td style="padding:8px 12px;color:var(--gray-400);">&#128065; &#9998; &#128465;</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--gray-100);">
+                <td style="padding:8px 12px;"><span style="font-weight:600;color:var(--primary);">Jane Smith</span></td>
+                <td style="padding:8px 12px;"><span class="badge badge-info" style="font-size:.65rem;">HR</span></td>
+                <td style="padding:8px 12px;">Human Resources</td>
+                <td style="padding:8px 12px;"><span class="badge badge-success" style="font-size:.65rem;">Active</span></td>
+                <td style="padding:8px 12px;color:var(--gray-400);">&#128065; &#9998; &#128465;</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 12px;"><span style="font-weight:600;color:var(--primary);">Mike Wilson</span></td>
+                <td style="padding:8px 12px;"><span class="badge badge-success" style="font-size:.65rem;">Employee</span></td>
+                <td style="padding:8px 12px;">Marketing</td>
+                <td style="padding:8px 12px;"><span class="badge badge-warning" style="font-size:.65rem;">On Leave</span></td>
+                <td style="padding:8px 12px;color:var(--gray-400);">&#128065; &#9998; &#128465;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <p>The Users page displays all employees in a searchable, paginated table:</p>
+    <table class="doc-table">
+      <thead><tr><th>Column</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Name</strong></td><td>Employee full name (clickable to view profile).</td></tr>
+        <tr><td><strong>Role</strong></td><td>Badge showing <span class="badge badge-primary">Admin</span>, <span class="badge badge-info">HR</span>, <span class="badge badge-success">Employee</span>, or <span class="badge" style="background:#f3e8ff;color:#7c3aed;">Manager</span>.</td></tr>
+        <tr><td><strong>Department</strong></td><td>The department the employee belongs to.</td></tr>
+        <tr><td><strong>Status</strong></td><td><span class="badge badge-success">Active</span>, <span class="badge badge-gray">Inactive</span>, or <span class="badge badge-warning">On Leave</span>.</td></tr>
+        <tr><td><strong>Join Date</strong></td><td>Date the employee joined the organization.</td></tr>
+        <tr><td><strong>Actions</strong></td><td>View, Edit, and Delete buttons.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Searching Users</h3>
+    <p>Use the search bar at the top of the table to filter users by <strong>first name</strong>, <strong>last name</strong>, or <strong>email address</strong>. Results update in real time as you type.</p>
+
+    <h3>Adding a New User</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Click &ldquo;Add User&rdquo;</h4>
+          <p>Click the <strong>Add User</strong> button above the table. A form modal will open.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Fill in Employee Details</h4>
+          <p>Complete all required fields:</p>
+          <ul style="margin:4px 0 0 16px;">
+            <li><strong>First Name</strong> and <strong>Last Name</strong></li>
+            <li><strong>Email</strong> &mdash; Must be a valid, unique email address.</li>
+            <li><strong>Role</strong> &mdash; Select from Admin, HR, Employee, or Manager.</li>
+            <li><strong>Department</strong> &mdash; Choose from available departments (loaded from organization settings).</li>
+            <li><strong>Designation</strong> &mdash; Choose from available designations.</li>
+            <li><strong>Phone Number</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Save</h4>
+          <p>Click <strong>Save</strong> to create the new user account. The employee will appear in the list.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Viewing a User Profile</h3>
+    <p>Click a user&rsquo;s <strong>name</strong> or the <strong>View</strong> action to open their profile page, which shows:</p>
+    <ul style="margin:0 0 16px 20px;color:var(--gray-600);">
+      <li>Avatar with initials and status badge</li>
+      <li>Full name, designation, and department</li>
+      <li>Personal info: email, phone, building/location, role</li>
+      <li>Employment details: join date, employee ID (formatted as EMP-XXXX)</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: PROFILE                                              -->
+    <!-- ============================================================ -->
+    <h2 id="profile">
+      <span class="section-icon" style="background:var(--primary-light);color:var(--primary);">&#128100;</span>
+      My Profile
+    </h2>
+    <p class="section-intro">View and update your personal information, employment details, address, and emergency contacts.</p>
+
+    <h3>Profile Header</h3>
+
+    <!-- Profile Card Preview -->
+    <div class="profile-preview">
+      <div class="pp-avatar">JD</div>
+      <div class="pp-info">
+        <h4>John Doe</h4>
+        <p>Senior Software Engineer &bull; Engineering</p>
+        <span class="pp-badge">&#128994; Active</span>
+        <div style="margin-top:8px;font-size:.78rem;color:rgba(255,255,255,.7);">
+          &#9993; john.doe@company.com &nbsp;&bull;&nbsp; &#128222; +1 (555) 123-4567
+        </div>
+      </div>
+    </div>
+
+    <p>Your profile header displays your avatar (generated from your initials), full name, status badge, email, and phone number against a gradient background.</p>
+
+    <h3>Personal Statistics</h3>
+    <p>Four cards summarize your work record:</p>
+    <table class="doc-table">
+      <thead><tr><th>Card</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Days Present</strong></td><td>Total days you were present this period.</td></tr>
+        <tr><td><strong>Leave Taken</strong></td><td>Total leave days used.</td></tr>
+        <tr><td><strong>Overtime Hours</strong></td><td>Extra hours worked beyond your regular shift.</td></tr>
+        <tr><td><strong>Performance</strong></td><td>Your current performance rating.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Editing Your Profile</h3>
+    <p>Your profile is organized into four editable sections. Click the <strong>Edit</strong> button on any section to enable editing:</p>
+
+    <h4>Personal Information</h4>
+    <table class="doc-table">
+      <thead><tr><th>Field</th><th>Editable</th></tr></thead>
+      <tbody>
+        <tr><td>First Name</td><td>Yes</td></tr>
+        <tr><td>Last Name</td><td>Yes</td></tr>
+        <tr><td>Email</td><td>Yes</td></tr>
+        <tr><td>Phone</td><td>Yes</td></tr>
+        <tr><td>Date of Birth</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Employment Details</h4>
+    <table class="doc-table">
+      <thead><tr><th>Field</th><th>Editable</th></tr></thead>
+      <tbody>
+        <tr><td>Designation</td><td>Yes (dropdown)</td></tr>
+        <tr><td>Department</td><td>Yes (dropdown)</td></tr>
+        <tr><td>Role</td><td>No (read-only)</td></tr>
+        <tr><td>Join Date</td><td>No (read-only)</td></tr>
+        <tr><td>Employee ID</td><td>No (read-only, format: EMP-XXXX)</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Address Details</h4>
+    <table class="doc-table">
+      <thead><tr><th>Field</th><th>Editable</th></tr></thead>
+      <tbody>
+        <tr><td>Street Address</td><td>Yes</td></tr>
+        <tr><td>City</td><td>Yes</td></tr>
+        <tr><td>State</td><td>Yes</td></tr>
+        <tr><td>Country</td><td>Yes</td></tr>
+        <tr><td>Zip Code</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Emergency Contact</h4>
+    <table class="doc-table">
+      <thead><tr><th>Field</th><th>Editable</th></tr></thead>
+      <tbody>
+        <tr><td>Contact Name</td><td>Yes</td></tr>
+        <tr><td>Relationship</td><td>Yes</td></tr>
+        <tr><td>Phone Number</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+
+    <p>After making changes, click <strong>Save Changes</strong> to persist them or <strong>Cancel</strong> to discard.</p>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: SETTINGS                                             -->
+    <!-- ============================================================ -->
+    <h2 id="settings">
+      <span class="section-icon" style="background:var(--gray-100);color:var(--gray-600);">&#9881;</span>
+      Settings
+    </h2>
+    <p class="section-intro">Customize your experience with notification preferences, appearance options, security settings, and privacy controls.</p>
+
+    <h3>Notifications</h3>
+
+    <!-- Toggle Previews -->
+    <div class="card">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="toggle-preview">
+          <div class="toggle-track on"><div class="toggle-knob"></div></div>
+          <span class="toggle-label"><strong>Email Notifications</strong> &mdash; Receive important updates via email</span>
+        </div>
+        <div class="toggle-preview">
+          <div class="toggle-track on"><div class="toggle-knob"></div></div>
+          <span class="toggle-label"><strong>Push Notifications</strong> &mdash; Browser push notifications for real-time alerts</span>
+        </div>
+        <div class="toggle-preview">
+          <div class="toggle-track off"><div class="toggle-knob"></div></div>
+          <span class="toggle-label"><strong>SMS Notifications</strong> &mdash; Text message alerts for critical events</span>
+        </div>
+        <div class="toggle-preview">
+          <div class="toggle-track on"><div class="toggle-knob"></div></div>
+          <span class="toggle-label"><strong>Sound Effects</strong> &mdash; Play sound when a notification is received</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Appearance</h3>
+
+    <!-- Theme Toggle Previews -->
+    <div class="card">
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
+        <div class="toggle-preview">
+          <div class="toggle-track off"><div class="toggle-knob"></div></div>
+          <span class="toggle-label"><strong>Dark Mode</strong> &mdash; Toggle between light and dark themes</span>
+        </div>
+        <div class="toggle-preview">
+          <div class="toggle-track off"><div class="toggle-knob"></div></div>
+          <span class="toggle-label"><strong>Compact Mode</strong> &mdash; Reduce spacing for denser layouts</span>
+        </div>
+      </div>
+
+      <!-- Accent Color Swatches -->
+      <div style="font-size:.82rem;font-weight:600;color:var(--gray-700);margin-bottom:10px;">Accent Color</div>
+      <div class="swatch-row">
+        <div class="swatch">
+          <div class="swatch-circle" style="background:#4f46e5;box-shadow:0 0 0 3px white,0 0 0 5px #4f46e5;"></div>
+          <span class="swatch-label">Blue</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-circle" style="background:#7c3aed;"></div>
+          <span class="swatch-label">Purple</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-circle" style="background:#dc2626;"></div>
+          <span class="swatch-label">Red</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-circle" style="background:#16a34a;"></div>
+          <span class="swatch-label">Green</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-circle" style="background:#ea580c;"></div>
+          <span class="swatch-label">Orange</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-circle" style="background:#0891b2;"></div>
+          <span class="swatch-label">Cyan</span>
+        </div>
+      </div>
+
+      <!-- Language Preview -->
+      <div style="font-size:.82rem;font-weight:600;color:var(--gray-700);margin:16px 0 8px;">Language</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div class="btn-preview primary" style="padding:6px 14px;font-size:.75rem;border-radius:20px;">English (US)</div>
+        <div class="btn-preview ghost" style="padding:6px 14px;font-size:.75rem;border-radius:20px;">English (UK)</div>
+        <div class="btn-preview ghost" style="padding:6px 14px;font-size:.75rem;border-radius:20px;">Espa&ntilde;ol</div>
+        <div class="btn-preview ghost" style="padding:6px 14px;font-size:.75rem;border-radius:20px;">Fran&ccedil;ais</div>
+        <div class="btn-preview ghost" style="padding:6px 14px;font-size:.75rem;border-radius:20px;">Deutsch</div>
+        <div class="btn-preview ghost" style="padding:6px 14px;font-size:.75rem;border-radius:20px;">&#2361;&#2367;&#2344;&#2381;&#2342;&#2368;</div>
+      </div>
+    </div>
+
+    <h3>Security</h3>
+
+    <h4>Two-Factor Authentication (2FA)</h4>
+    <p>Toggle to enable or disable two-factor authentication for added account security. When enabled, a secondary verification step is required during login.</p>
+
+    <h4>Change Password</h4>
+
+    <!-- Password Change Form Mockup -->
+    <div class="form-mockup">
+      <div class="fm-row">
+        <span class="fm-label">Current Password</span>
+        <div class="fm-input" style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:var(--gray-400);">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</span>
+          <span style="font-size:.9rem;color:var(--gray-400);">&#128065;</span>
+        </div>
+      </div>
+      <div class="fm-row">
+        <span class="fm-label">New Password <span style="color:var(--gray-300);font-weight:400;">(min. 8 characters)</span></span>
+        <div class="fm-input" style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:var(--gray-400);">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</span>
+          <span style="font-size:.9rem;color:var(--gray-400);">&#128065;</span>
+        </div>
+      </div>
+      <div class="fm-row">
+        <span class="fm-label">Confirm New Password</span>
+        <div class="fm-input" style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:var(--gray-400);">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</span>
+          <span style="font-size:.9rem;color:var(--success);">&#9989;</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+        <div class="btn-preview primary" style="font-size:.78rem;">Update Password</div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Enter Current Password</h4>
+          <p>Type your current password in the first field.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Enter New Password</h4>
+          <p>Choose a new password with at least 8 characters.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Confirm New Password</h4>
+          <p>Re-enter the new password to confirm. Both fields must match.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Click &ldquo;Update Password&rdquo;</h4>
+          <p>Click the button to save your new password. A success or error message will appear.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Privacy &amp; Data</h3>
+    <table class="doc-table">
+      <thead><tr><th>Option</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Export My Data</strong></td><td>Downloads all your personal data as a JSON file.</td></tr>
+        <tr><td><strong>Connected Devices</strong></td><td>Shows the devices currently associated with your account.</td></tr>
+        <tr><td><strong>Delete Account</strong></td><td>Permanently delete your account and all data. A confirmation modal appears before deletion. <strong>This action cannot be undone.</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box danger">
+      <span class="info-icon">&#9888;&#65039;</span>
+      <div><strong>Danger Zone:</strong> Deleting your account is irreversible. All your data, attendance records, leave history, and reimbursement claims will be permanently removed. Contact your system administrator if you need to restore data.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: ROLES & PERMISSIONS                                  -->
+    <!-- ============================================================ -->
+    <h2 id="roles">
+      <span class="section-icon" style="background:var(--primary-light);color:var(--primary);">&#128272;</span>
+      Roles &amp; Permissions
+    </h2>
+    <p class="section-intro">Understand the four user roles and what each can access.</p>
+
+    <!-- Visual Role Hierarchy -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0;">
+      <div style="background:linear-gradient(135deg,#4f46e5,#3730a3);color:white;border-radius:12px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:6px;">&#128081;</div>
+        <div style="font-size:.9rem;font-weight:700;">Admin</div>
+        <div style="font-size:.68rem;opacity:.8;margin-top:4px;">Full System Access</div>
+        <div style="margin-top:10px;font-size:.65rem;opacity:.7;line-height:1.6;">Users &#9989;<br>Settings &#9989;<br>Reports &#9989;</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#0284c7,#0369a1);color:white;border-radius:12px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:6px;">&#128188;</div>
+        <div style="font-size:.9rem;font-weight:700;">HR</div>
+        <div style="font-size:.68rem;opacity:.8;margin-top:4px;">People Operations</div>
+        <div style="margin-top:10px;font-size:.65rem;opacity:.7;line-height:1.6;">Users &#9989;<br>Approvals &#9989;<br>Announcements &#9989;</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border-radius:12px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:6px;">&#128101;</div>
+        <div style="font-size:.9rem;font-weight:700;">Manager</div>
+        <div style="font-size:.68rem;opacity:.8;margin-top:4px;">Team Leadership</div>
+        <div style="margin-top:10px;font-size:.65rem;opacity:.7;line-height:1.6;">Team Leave &#9989;<br>Attendance &#9989;<br>Reports &#9989;</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#16a34a,#15803d);color:white;border-radius:12px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:6px;">&#128100;</div>
+        <div style="font-size:.9rem;font-weight:700;">Employee</div>
+        <div style="font-size:.68rem;opacity:.8;margin-top:4px;">Self-Service</div>
+        <div style="margin-top:10px;font-size:.65rem;opacity:.7;line-height:1.6;">Attendance &#9989;<br>Leave &#9989;<br>Profile &#9989;</div>
+      </div>
+    </div>
+
+    <table class="doc-table">
+      <thead>
+        <tr><th>Role</th><th>Description</th><th>Key Permissions</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-primary">Admin</span></td>
+          <td>System administrator with full access.</td>
+          <td>All features including user management, organization settings, and system configuration.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-info">HR</span></td>
+          <td>Human Resources personnel.</td>
+          <td>User management, leave approvals, attendance oversight, announcement creation, and reimbursement review.</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#f3e8ff;color:#7c3aed;">Manager</span></td>
+          <td>Team or department manager.</td>
+          <td>Leave approvals for their team, attendance monitoring, and team management features.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-success">Employee</span></td>
+          <td>Standard employee.</td>
+          <td>Personal attendance, leave requests, schedule viewing, reimbursement submission, profile editing, and settings.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box info">
+      <span class="info-icon">&#128161;</span>
+      <div>The sidebar navigation dynamically shows or hides menu items based on your role. If you don&rsquo;t see a particular page, your role may not have access to it. Contact your administrator for role changes.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: FAQ                                                  -->
+    <!-- ============================================================ -->
+    <h2 id="faq">
+      <span class="section-icon" style="background:var(--success-light);color:var(--success);">&#10067;</span>
+      Frequently Asked Questions
+    </h2>
+    <p class="section-intro">Quick answers to common questions about using Pulse Ops.</p>
+
+    <details>
+      <summary>How do I clock in for the day?</summary>
+      <div class="faq-body">
+        <p>Go to the <strong>Dashboard</strong> or <strong>Attendance</strong> page and click the <strong>Clock In</strong> button in the Attendance Hero panel at the top. Your session starts immediately and your working hours begin tracking.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What happens if I forget to clock out?</summary>
+      <div class="faq-body">
+        <p>Pulse Ops detects incomplete shifts automatically. The next time you log in, an <strong>Incomplete Shift</strong> modal will appear asking you to enter the correct clock-out time and a reason. This ensures your attendance records remain accurate.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Can I apply for half-day leave?</summary>
+      <div class="faq-body">
+        <p>Yes. When applying for leave, toggle the <strong>Half Day</strong> switch and then select either <strong>First Half</strong> or <strong>Second Half</strong>. This counts as 0.5 days against your leave balance.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I cancel a pending leave request?</summary>
+      <div class="faq-body">
+        <p>Go to the <strong>Leave</strong> page, find your request in the <strong>My Requests</strong> table, and click the <strong>Cancel</strong> button. Only requests with a <span class="badge badge-warning">Pending</span> status can be cancelled. Approved or rejected requests cannot be cancelled.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Why can&rsquo;t I see the Users page?</summary>
+      <div class="faq-body">
+        <p>The Users page is restricted to <strong>Admin</strong> and <strong>HR</strong> roles. If you need access, contact your system administrator to review your role assignment.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What file types can I upload for reimbursements?</summary>
+      <div class="faq-body">
+        <p>You can upload <code>PDF</code>, <code>JPG</code>, <code>JPEG</code>, <code>PNG</code>, <code>DOC</code>, and <code>DOCX</code> files. Individual files must be under <strong>1 MB</strong> and the total of all attachments must not exceed <strong>5 MB</strong>.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I enable dark mode?</summary>
+      <div class="faq-body">
+        <p>Go to <strong>Settings</strong> &rarr; <strong>Appearance</strong> and toggle the <strong>Dark Mode</strong> switch. The theme change applies immediately across the entire application and is saved to your browser.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Can I change the interface language?</summary>
+      <div class="faq-body">
+        <p>Yes. Go to <strong>Settings</strong> &rarr; <strong>Appearance</strong> &rarr; <strong>Language</strong> and select from: English (US), English (UK), Spanish, French, German, or Hindi. The change is applied immediately.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I export my personal data?</summary>
+      <div class="faq-body">
+        <p>Navigate to <strong>Settings</strong> &rarr; <strong>Privacy &amp; Data</strong> and click the <strong>Export My Data</strong> button. A JSON file containing all your personal data will be downloaded to your device.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What are acknowledgment-required announcements?</summary>
+      <div class="faq-body">
+        <p>Some announcements are flagged by HR or Admins as requiring acknowledgment. This means you must click the <strong>Acknowledge</strong> button to confirm you have read and understood the announcement. This is commonly used for policy changes, compliance notices, or important organizational updates.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I view my weekly schedule for a different week?</summary>
+      <div class="faq-body">
+        <p>On the <strong>Schedule</strong> page, use the <strong>&larr; Previous</strong> and <strong>Next &rarr;</strong> arrow buttons at the top of the weekly schedule table. The date range between the buttons updates to show the currently displayed week.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Can I edit a reimbursement request after submitting?</summary>
+      <div class="faq-body">
+        <p>You can only edit requests with a <span class="badge badge-warning">Pending</span> status. Click the <strong>Edit</strong> icon on the request row, make your changes, and submit again. Once a request is approved or rejected, it cannot be modified.</p>
+      </div>
+    </details>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: TROUBLESHOOTING                                      -->
+    <!-- ============================================================ -->
+    <h2 id="troubleshooting">
+      <span class="section-icon" style="background:var(--warning-light);color:#b45309;">&#128295;</span>
+      Troubleshooting
+    </h2>
+    <p class="section-intro">Common issues and how to resolve them.</p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--danger-light);color:var(--danger);">&#10060;</div>
+        <h4>Cannot Log In</h4>
+      </div>
+      <ul style="margin:0 0 0 16px;color:var(--gray-600);font-size:.9rem;">
+        <li>Double-check your email address and password for typos.</li>
+        <li>Ensure <kbd>Caps Lock</kbd> is not enabled.</li>
+        <li>Try the <strong>Forgot Password</strong> flow to reset your credentials.</li>
+        <li>If using Google Sign-In, ensure you are using the correct Google account associated with your Pulse Ops profile.</li>
+        <li>Clear your browser cache and cookies, then try again.</li>
+        <li>Contact your system administrator if the issue persists.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--warning-light);color:#b45309;">&#9888;&#65039;</div>
+        <h4>Page Not Loading or Showing Errors</h4>
+      </div>
+      <ul style="margin:0 0 0 16px;color:var(--gray-600);font-size:.9rem;">
+        <li>Check your internet connection.</li>
+        <li>Refresh the page using <kbd>Ctrl</kbd> + <kbd>R</kbd> (or <kbd>Cmd</kbd> + <kbd>R</kbd> on Mac).</li>
+        <li>Hard refresh with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> to clear cached assets.</li>
+        <li>Ensure you are using a supported, up-to-date browser.</li>
+        <li>If you see a &ldquo;Session expired&rdquo; message, log out and log back in.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--info-light);color:var(--info);">&#128276;</div>
+        <h4>Not Receiving Push Notifications</h4>
+      </div>
+      <ul style="margin:0 0 0 16px;color:var(--gray-600);font-size:.9rem;">
+        <li>Ensure notifications are enabled in <strong>Settings</strong> &rarr; <strong>Notifications</strong>.</li>
+        <li>Check that your browser has notification permissions enabled for the Pulse Ops domain.</li>
+        <li>On Windows, ensure &ldquo;Focus Assist&rdquo; or &ldquo;Do Not Disturb&rdquo; is not blocking notifications.</li>
+        <li>On macOS, check System Preferences &rarr; Notifications for your browser.</li>
+        <li>Try logging out and back in to re-register the push notification token.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--success-light);color:var(--success);">&#128197;</div>
+        <h4>Schedule Not Showing Correct Data</h4>
+      </div>
+      <ul style="margin:0 0 0 16px;color:var(--gray-600);font-size:.9rem;">
+        <li>Navigate away from the Schedule page and return to trigger a fresh data fetch.</li>
+        <li>Ensure your timezone settings are correct in your browser.</li>
+        <li>If your roster was recently updated by HR/Admin, it may take a moment to reflect. Refresh the page.</li>
+        <li>Contact HR if your schedule appears permanently incorrect.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--danger-light);color:var(--danger);">&#128206;</div>
+        <h4>File Upload Failing</h4>
+      </div>
+      <ul style="margin:0 0 0 16px;color:var(--gray-600);font-size:.9rem;">
+        <li>Verify the file is under the size limit (1 MB per file for reimbursements, 5 MB per file for leave attachments).</li>
+        <li>Ensure the file type is supported (<code>PDF</code>, <code>JPG</code>, <code>JPEG</code>, <code>PNG</code>, <code>DOC</code>, <code>DOCX</code>).</li>
+        <li>Try compressing the file or converting it to a supported format.</li>
+        <li>Check your internet connection &mdash; large uploads may fail on unstable connections.</li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: GLOSSARY                                             -->
+    <!-- ============================================================ -->
+    <h2 id="glossary">
+      <span class="section-icon" style="background:var(--primary-light);color:var(--primary);">&#128214;</span>
+      Glossary
+    </h2>
+    <p class="section-intro">Definitions of key terms used throughout Pulse Ops.</p>
+
+    <table class="doc-table">
+      <thead><tr><th style="width:25%;">Term</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Clock In</strong></td><td>The act of starting your work session for the day, which begins tracking your working hours.</td></tr>
+        <tr><td><strong>Clock Out</strong></td><td>The act of ending your work session, which stops the working hours tracker.</td></tr>
+        <tr><td><strong>Break</strong></td><td>A pause in your work session. Working hours are not tracked during breaks.</td></tr>
+        <tr><td><strong>Net Working Time</strong></td><td>Your total session time minus all break durations.</td></tr>
+        <tr><td><strong>Leave Balance</strong></td><td>The number of leave days remaining for a specific leave type.</td></tr>
+        <tr><td><strong>Half Day</strong></td><td>A leave request for only the first or second half of a working day, counting as 0.5 days.</td></tr>
+        <tr><td><strong>Carry Forward</strong></td><td>The ability to transfer unused leave days from one period to the next, subject to policy limits.</td></tr>
+        <tr><td><strong>Roster</strong></td><td>Your weekly shift schedule as configured by your manager or HR.</td></tr>
+        <tr><td><strong>Weekly Off</strong></td><td>Your regularly scheduled day(s) off each week (e.g., Saturday and Sunday).</td></tr>
+        <tr><td><strong>Acknowledgment</strong></td><td>A confirmation that you have read and understood an announcement, required for certain notices.</td></tr>
+        <tr><td><strong>OTP</strong></td><td>One-Time Password &mdash; a 6-digit code sent to your email for password recovery verification.</td></tr>
+        <tr><td><strong>2FA</strong></td><td>Two-Factor Authentication &mdash; an additional security layer requiring a secondary verification during login.</td></tr>
+        <tr><td><strong>FCM</strong></td><td>Firebase Cloud Messaging &mdash; the technology used to deliver push notifications to your browser.</td></tr>
+        <tr><td><strong>Reimbursement Type</strong></td><td>A category of expense (e.g., Travel, Meals) with associated rules like maximum amount and receipt requirements.</td></tr>
+        <tr><td><strong>Incomplete Shift</strong></td><td>A work session where the employee forgot to clock out, requiring manual correction.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="doc-footer">
+      <p>&copy; 2026 Pulse Ops. All rights reserved.</p>
+      <p>This document is intended for authorized users of the Pulse Ops platform. For support, contact your system administrator.</p>
+    </div>
+
+  </div><!-- .content -->
+</div><!-- .main -->
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">&#8593;</button>
+
+<script>
+  // Sidebar toggle (mobile)
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('visible');
+  }
+
+  // Close sidebar when clicking a link (mobile)
+  document.querySelectorAll('.sidebar-nav a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 900) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('visible');
+      }
+    });
+  });
+
+  // Back to top button visibility
+  window.addEventListener('scroll', function() {
+    var btn = document.getElementById('backToTop');
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+
+  // Scroll progress bar
+  window.addEventListener('scroll', function() {
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var scrolled = (window.scrollY / docHeight) * 100;
+    document.getElementById('scrollProgress').style.width = scrolled + '%';
+  });
+
+  // Active nav highlight
+  var sections = document.querySelectorAll('h2[id]');
+  var navLinks = document.querySelectorAll('.sidebar-nav a');
+
+  window.addEventListener('scroll', function() {
+    var current = '';
+    sections.forEach(function(section) {
+      var sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+    navLinks.forEach(function(link) {
+      link.style.background = '';
+      link.style.color = '';
+      link.style.fontWeight = '';
+      if (link.getAttribute('href') === '#' + current) {
+        link.style.background = 'var(--primary-light)';
+        link.style.color = 'var(--primary)';
+        link.style.fontWeight = '600';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

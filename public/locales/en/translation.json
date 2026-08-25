@@ -1,0 +1,18 @@
+{
+  "settings": "Settings",
+  "notifications": "Notifications",
+  "appearance": "Appearance",
+  "security": "Security",
+  "privacy_data": "Privacy & Data",
+  "dark_mode": "Dark Mode",
+  "light_mode": "Light Mode",
+  "accent_color": "Accent Color",
+  "language": "Language",
+  "manage_preferences": "Manage your account preferences and settings",
+  "save_changes": "Save Changes",
+  "saved": "Saved!",
+  "saving": "Saving...",
+  "failed": "Failed!",
+  "all_saved": "All Saved",
+  "unsaved_changes": "You have unsaved changes. Don't forget to save your settings."
+}

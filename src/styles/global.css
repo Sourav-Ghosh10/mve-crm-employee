@@ -1,0 +1,314 @@
+@import "tailwindcss";
+
+/* Custom theme colors based on CodecIT design system */
+:root {
+  /* Primary Colors */
+  --primary: #1976d2;
+  --primary-dark: #0d47a1;
+  --primary-light: #42a5fa;
+  --primary-foreground: #ffffff;
+
+  /* Accent Colors */
+  --accent: #ff9800;
+  --accent-light: #ffb74d;
+  --accent-foreground: #ffffff;
+
+  /* Status Colors */
+  --success: #43a047;
+  --success-light: #66bb6a;
+  --warning: #fb8c00;
+  --warning-light: #ffa726;
+  --error: #e53935;
+  --error-light: #ef5350;
+  --info: #2196f3;
+
+  /* Neutral Colors */
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --foreground: #2c3e50;
+  --foreground-secondary: #78909c;
+  --foreground-tertiary: #546e7a;
+  --border: #e0e0e0;
+  --border-light: #f0f0f0;
+  --input: #e0e0e0;
+  --ring: #1976d2;
+
+  /* Muted */
+  --muted: #f5f7fa;
+  --muted-foreground: #78909c;
+
+  /* Destructive */
+  --destructive: #e53935;
+  --destructive-foreground: #ffffff;
+
+  /* Card */
+  --card: #ffffff;
+  --card-foreground: #2c3e50;
+
+  /* Popover */
+  --popover: #ffffff;
+  --popover-foreground: #2c3e50;
+
+  /* Radius */
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Primary Colors */
+  --primary: #90caf9;
+  --primary-dark: #42a5fa;
+  --primary-light: #e3f2fd;
+  --primary-foreground: #000000;
+
+  /* Accent Colors */
+  --accent: #ffb74d;
+  --accent-light: #ffe97d;
+  --accent-foreground: #000000;
+
+  /* Neutral Colors */
+  --background: #020617;
+  --surface: #0f172a;
+  --foreground: #f8fafc;
+  --foreground-secondary: #94a3b8;
+  --foreground-tertiary: #64748b;
+  --border: #1e293b;
+  --border-light: #334155;
+  --input: #1e293b;
+  --ring: #90caf9;
+
+  /* Muted */
+  --muted: #0f172a;
+  --muted-foreground: #94a3b8;
+
+  /* Card */
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
+
+  /* Popover */
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+}
+
+@theme {
+  /* Primary Colors */
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* Accent Colors */
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Status Colors */
+  --color-success: var(--success);
+  --color-success-light: var(--success-light);
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
+  --color-error: var(--error);
+  --color-error-light: var(--error-light);
+  --color-info: var(--info);
+
+  /* Neutral Colors */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-foreground-tertiary: var(--foreground-tertiary);
+  --color-border: var(--border);
+  --color-border-light: var(--border-light);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Muted */
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Destructive */
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Card */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  /* Popover */
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Border radius */
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.12);
+  --shadow-primary: 0 4px 12px rgba(33, 150, 243, 0.4);
+
+  /* Font family */
+  --font-sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+
+  h1 {
+    @apply text-3xl font-bold leading-tight;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold leading-snug;
+  }
+
+  h3 {
+    @apply text-xl font-semibold;
+  }
+
+  h4 {
+    @apply text-lg font-semibold;
+  }
+
+  h5 {
+    @apply text-base font-medium;
+  }
+
+  h6 {
+    @apply text-sm font-medium;
+  }
+}
+
+@layer components {
+
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20;
+  }
+
+  /* Dark mode glass override */
+  :is(.dark .glass) {
+    @apply bg-slate-900/80 border-white/10;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-b from-primary to-primary-dark;
+  }
+
+  .gradient-accent {
+    @apply bg-gradient-to-r from-accent to-accent-light;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full hover:bg-foreground-secondary;
+  }
+
+  /* Status badges */
+  .badge-success {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-success/10 text-success;
+  }
+
+  .badge-warning {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-warning/10 text-warning;
+  }
+
+  .badge-error {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-error/10 text-error;
+  }
+
+  .badge-info {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-info/10 text-info;
+  }
+}
+
+@layer utilities {
+
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Animation utilities */
+  .animate-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hover-lift {
+    @apply hover:-translate-y-1 transition-transform duration-300;
+  }
+
+  /* Focus visible utilities */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+
+  /* Spin animation for loading */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  .hover\:pause-animation:hover {
+    animation-play-state: paused;
+  }
+}

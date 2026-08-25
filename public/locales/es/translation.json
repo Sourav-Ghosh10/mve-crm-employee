@@ -1,0 +1,18 @@
+{
+  "settings": "Configuración",
+  "notifications": "Notificaciones",
+  "appearance": "Apariencia",
+  "security": "Seguridad",
+  "privacy_data": "Privacidad y Datos",
+  "dark_mode": "Modo Oscuro",
+  "light_mode": "Modo Claro",
+  "accent_color": "Color de Acento",
+  "language": "Idioma",
+  "manage_preferences": "Gestiona las preferencias y configuración de tu cuenta",
+  "save_changes": "Guardar Cambios",
+  "saved": "¡Guardado!",
+  "saving": "Guardando...",
+  "failed": "¡Falló!",
+  "all_saved": "Todo Guardado",
+  "unsaved_changes": "Tienes cambios sin guardar. No olvides guardar tu configuración."
+}
