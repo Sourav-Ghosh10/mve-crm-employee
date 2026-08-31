@@ -324,7 +324,7 @@ const Attendance: React.FC = () => {
                           )}
                         >
                           {displayStatus}
-                          {leave?.isEarlyLeave && leave?.requestedHours ?  (h) : ''}
+                          {leave?.isEarlyLeave && leave?.requestedHours ? ` (${leave.requestedHours}h)` : ''}
                         </span>
                         
                         {/* Tooltip for Leave Comment */}
