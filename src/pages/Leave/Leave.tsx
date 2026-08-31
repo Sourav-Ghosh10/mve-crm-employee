@@ -460,13 +460,13 @@ const Leave: React.FC = () => {
     const unpaid = perType.find(t => t.isPaid === false || t.code === 'LWP' || t.name.toLowerCase().includes('unpaid'));
 
     return {
-      available: summary.available ?? 0,
-      used: summary.used ?? 0,
-      approved: summary.approved ?? 0,
+      available: Number(Number(summary.available ?? 0).toFixed(2)),
+      used: Number(Number(summary.used ?? 0).toFixed(2)),
+      approved: Number(Number(summary.approved ?? 0).toFixed(2)),
       approvedLeaveHours: summary.approvedLeaveHours ?? 0,
       approvedLeaveDays: summary.approvedLeaveDays ?? 0,
       pending: summary.pending ?? 0,
-      total: summary.totalAllocated ?? 0,
+      total: Number(Number(summary.totalAllocated ?? 0).toFixed(2)),
       unpaidUsed: unpaid ? (unpaid.used ?? 0) : 0
     };
   };
@@ -1198,7 +1198,7 @@ const Leave: React.FC = () => {
                           </p>
                           {balance && type.isPaid !== false && (
                             <p className="text-xs text-foreground-tertiary">
-                              {balance.currentBalance ?? 0} available
+                              {Number(Number(balance.currentBalance ?? 0).toFixed(2))} available
                             </p>
                           )}
                           {type.isPaid === false && (
@@ -1251,7 +1251,7 @@ const Leave: React.FC = () => {
                           </p>
                           {balance && type !== 'unpaid' && (
                             <p className="text-xs text-foreground-tertiary">
-                              {balance.currentBalance ?? 0} available
+                              {Number(Number(balance.currentBalance ?? 0).toFixed(2))} available
                             </p>
                           )}
                           {type === 'unpaid' && (
@@ -1412,7 +1412,7 @@ const Leave: React.FC = () => {
                             <p className="text-xs text-foreground-secondary mt-0.5">
                               {selectedTypeBalance.isPaid === false
                                 ? "No limit for Unpaid Leave"
-                                : `${selectedTypeBalance.currentBalance ?? 0} days available for ${selectedTypeBalance.name}`}
+                                : `${Number(Number(selectedTypeBalance.currentBalance ?? 0).toFixed(2))} days available for ${selectedTypeBalance.name}`}
                             </p>
                           )}
                         </>
