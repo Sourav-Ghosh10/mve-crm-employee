@@ -60,6 +60,7 @@ export interface BackendUser {
       zipCode?: string;
     };
     dateOfBirth?: string;
+    panNumber?: string;
     emergencyContact?: {
       name?: string;
       relationship?: string;
@@ -103,6 +104,7 @@ export const mapUserResponse = (backendUser: BackendUser): User => {
     weeklyOff: backendUser.employment.workingHours?.weeklyOff,
     workingHours: backendUser.employment.workingHours,
     dateOfBirth: backendUser.personalInfo.dateOfBirth,
+    panNumber: backendUser.personalInfo.panNumber || (backendUser as any).panNumber,
     address: backendUser.personalInfo.address,
     emergencyContact: backendUser.personalInfo.emergencyContact || (backendUser as any).emergencyContact,
   };
@@ -117,6 +119,7 @@ export const mapUserRequest = (user: Partial<User>): Partial<BackendUser> => {
     user.email !== undefined ||
     user.phone !== undefined ||
     user.dateOfBirth !== undefined ||
+    user.panNumber !== undefined ||
     user.address !== undefined ||
     user.emergencyContact !== undefined
   ) {
@@ -126,6 +129,7 @@ export const mapUserRequest = (user: Partial<User>): Partial<BackendUser> => {
     if (user.email !== undefined) request.personalInfo.email = user.email;
     if (user.phone !== undefined) request.personalInfo.phone = user.phone;
     if (user.dateOfBirth !== undefined) request.personalInfo.dateOfBirth = user.dateOfBirth;
+    if (user.panNumber !== undefined) request.personalInfo.panNumber = user.panNumber;
     if (user.address !== undefined) request.personalInfo.address = user.address;
     if (user.emergencyContact !== undefined) request.personalInfo.emergencyContact = user.emergencyContact;
   }

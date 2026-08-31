@@ -125,8 +125,7 @@ const Profile: React.FC = () => {
                 designation: user.designation || "",
                 location: user.location || "",
                 dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : "",
-                panNumber: user.personalInfo?.panNumber || (user as any).panNumber || "",
-                panNumber: user.personalInfo?.panNumber || (user as any).panNumber || "",
+                panNumber: user.panNumber || "",
                 address: {
                     street: user.address?.street || "",
                     city: user.address?.city || "",
@@ -294,6 +293,7 @@ const Profile: React.FC = () => {
                 designation: user.designation || "",
                 location: user.location || "",
                 dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : "",
+                panNumber: user.panNumber || "",
                 address: {
                     street: user.address?.street || "",
                     city: user.address?.city || "",
@@ -564,6 +564,19 @@ const Profile: React.FC = () => {
                                         <p className="text-xs text-error mt-1">{errors.dateOfBirth}</p>
                                     )}
                                 </div>
+                                <div>
+                                    <label className="text-sm font-medium text-foreground mb-1.5 block">
+                                        PAN Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="panNumber"
+                                        value={formData.panNumber}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. ABCDE1234F"
+                                        className="w-full px-4 py-2.5 border border-border rounded-xl bg-surface text-foreground focus:ring-2 focus:ring-primary focus:border-transparent uppercase"
+                                    />
+                                </div>
                                 {/* <div>
                                     <label className="text-sm font-medium text-foreground mb-1.5 block">
                                         Location
@@ -614,6 +627,13 @@ const Profile: React.FC = () => {
                                             day: "numeric",
                                         }) : "—"}
                                     </span>
+                                </div>
+                                <div className="flex items-center justify-between py-3 border-b border-border">
+                                    <div className="flex items-center gap-3">
+                                        <Shield className="w-5 h-5 text-foreground-tertiary" />
+                                        <span className="text-sm text-foreground-secondary">PAN Number</span>
+                                    </div>
+                                    <span className="font-medium text-sm uppercase">{formData.panNumber || "—"}</span>
                                 </div>
                                 {/* <div className="flex items-center justify-between py-3">
                                     <div className="flex items-center gap-3">

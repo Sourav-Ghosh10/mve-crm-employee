@@ -540,7 +540,20 @@ const Leave: React.FC = () => {
 
   const requestedDays = apiCalculatedDays;
   const selectedTypeBalance = getBalanceForType(leaveType);
+  const selectedApiType = apiLeaveTypes.find(
+    (t) => t.name.toLowerCase().replace(" leave", "") === leaveType?.toLowerCase().replace(" leave", "")
+  );
+  const isUnpaidType =
+    leaveType?.toLowerCase().replace(" leave", "") === "unpaid" ||
+    selectedTypeBalance?.isPaid === false ||
+    selectedApiType?.isPaid === false ||
+    selectedTypeBalance?.code === "LWP" ||
+    selectedApiType?.code === "LWP" ||
+    selectedTypeBalance?.name?.toLowerCase().includes("unpaid") ||
+    selectedApiType?.name?.toLowerCase().includes("unpaid");
+
   const hasInsufficientBalance =
+    !isUnpaidType &&
     selectedTypeBalance &&
     selectedTypeBalance.currentBalance !== null &&
     requestedDays > selectedTypeBalance.currentBalance;
@@ -1408,11 +1421,11 @@ const Leave: React.FC = () => {
                           <p className="text-sm font-medium text-foreground">
                             {requestedDays} day{requestedDays !== 1 ? "s" : ""} requested
                           </p>
-                          {selectedTypeBalance && (
+                          {(selectedTypeBalance || isUnpaidType) && (
                             <p className="text-xs text-foreground-secondary mt-0.5">
-                              {selectedTypeBalance.isPaid === false
+                              {isUnpaidType
                                 ? "No limit for Unpaid Leave"
-                                : `${Number(Number(selectedTypeBalance.currentBalance ?? 0).toFixed(2))} days available for ${selectedTypeBalance.name}`}
+                                : `${Number(Number(selectedTypeBalance?.currentBalance ?? 0).toFixed(2))} days available for ${selectedTypeBalance?.name || leaveType}`}
                             </p>
                           )}
                         </>
