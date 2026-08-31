@@ -23,6 +23,7 @@ export interface User {
     weeklyOff: string[];
   };
   dateOfBirth?: string;
+    panNumber?: string;
   address?: {
     street?: string;
     city?: string;

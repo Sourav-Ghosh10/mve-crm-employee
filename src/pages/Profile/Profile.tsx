@@ -42,6 +42,7 @@ interface FormData {
     designation: string;
     location: string;
     dateOfBirth: string;
+    panNumber: string;
     address: {
         street: string;
         city: string;
@@ -94,6 +95,7 @@ const Profile: React.FC = () => {
         designation: "",
         location: "",
         dateOfBirth: "",
+        panNumber: "",
         address: {
             street: "",
             city: "",
@@ -123,6 +125,8 @@ const Profile: React.FC = () => {
                 designation: user.designation || "",
                 location: user.location || "",
                 dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : "",
+                panNumber: user.personalInfo?.panNumber || (user as any).panNumber || "",
+                panNumber: user.personalInfo?.panNumber || (user as any).panNumber || "",
                 address: {
                     street: user.address?.street || "",
                     city: user.address?.city || "",
