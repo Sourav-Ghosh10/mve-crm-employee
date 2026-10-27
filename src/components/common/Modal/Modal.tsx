@@ -3,14 +3,15 @@ import type { ReactNode } from "react";
 import { X } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
-interface ModalProps {
+export interface ModalProps {
   open: boolean;
   onClose: () => void;
-  title: ReactNode;
+  title?: ReactNode;
   children: ReactNode;
   actions?: ReactNode;
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
   isDismissible?: boolean;
+  hideHeader?: boolean;
 }
 
 
@@ -26,6 +27,15 @@ const maxWidthClasses = {
   "5xl": "max-w-5xl",
 };
 
+export const ModalFooter: React.FC<{ children: ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => (
+  <div className={cn("flex items-center justify-end gap-3 pt-4 border-t border-border", className)}>
+    {children}
+  </div>
+);
+
 const Modal: React.FC<ModalProps> = ({
   open,
   onClose,
@@ -34,6 +44,7 @@ const Modal: React.FC<ModalProps> = ({
   actions,
   maxWidth = "sm",
   isDismissible = true,
+  hideHeader = false,
 }) => {
 
   const handleEscape = useCallback(
@@ -80,23 +91,25 @@ const Modal: React.FC<ModalProps> = ({
         aria-labelledby="modal-title"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2
-            id="modal-title"
-            className="text-lg font-semibold text-foreground"
-          >
-            {title}
-          </h2>
-          {isDismissible && (
-            <button
-              onClick={onClose}
-              className="p-1 rounded-md text-foreground-secondary hover:text-foreground hover:bg-muted transition-colors"
-              aria-label="Close modal"
+        {!hideHeader && (
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h2
+              id="modal-title"
+              className="text-lg font-semibold text-foreground"
             >
-              <X className="w-5 h-5" />
-            </button>
-          )}
-        </div>
+              {title}
+            </h2>
+            {isDismissible && (
+              <button
+                onClick={onClose}
+                className="p-1 rounded-md text-foreground-secondary hover:text-foreground hover:bg-muted transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        )}
 
 
         {/* Body */}

@@ -61,6 +61,21 @@ export const leaveService = {
   },
 
   /**
+   * Alias for getMyRequests for compatibility
+   */
+  getRequests: async (params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    leaveType?: string;
+    startDate?: string;
+    endDate?: string;
+    search?: string;
+  }): Promise<LeaveRequestsResponse> => {
+    return leaveService.getMyRequests(params);
+  },
+
+  /**
    * Get current user's leave requests
    * GET /api/leave-requests/my-requests
    */
@@ -99,8 +114,22 @@ export const leaveService = {
    * Get specific employee's leave balance (Admin/Manager)
    * GET /api/leave-requests/employee/:userId/balance
    */
-  getEmployeeBalance: async (userId: string): Promise<LeaveBalanceApiResponse> => {
+  getEmployeeBalance: async (userId: string): Promise<any> => {
     const response = await api.get(`/leave-requests/employee/${userId}/balance`);
+    return response.data;
+  },
+
+  /**
+   * Add opening balance for employee
+   * POST /api/leave-balances/opening
+   */
+  addOpeningBalance: async (data: {
+    employeeId: string;
+    leaveTypeId: string;
+    amount: number;
+    description?: string;
+  }): Promise<any> => {
+    const response = await api.post('/leave-balances/opening', data);
     return response.data;
   },
 
@@ -122,6 +151,13 @@ export const leaveService = {
   getLeaveTypes: async (params?: { page?: number; limit?: number }): Promise<LeaveTypesResponse> => {
     const response = await api.get('/leave-types', { params });
     return response.data;
+  },
+
+  /**
+   * Alias for getMyStats for compatibility
+   */
+  getStats: async (): Promise<LeaveStatsApiResponse> => {
+    return leaveService.getMyStats();
   },
 
   /**

@@ -27,8 +27,33 @@ export interface ReimbursementAttachment {
     fileUrl: string;
 }
 
+export interface ReimbursementTypeInput {
+    name: string;
+    description?: string;
+    maxAmount?: number;
+    requiresReceipt?: boolean;
+    isActive?: boolean;
+}
+
+export interface PaginatedReimbursementResponse {
+    data: Reimbursement[];
+    pagination: {
+        total: number;
+        page: number;
+        limit: number;
+        pages: number;
+    };
+    total: number;
+    totalPages: number;
+    page: number;
+    limit: number;
+    success?: boolean;
+    message?: string;
+}
+
 export interface Reimbursement {
     _id: string;
+    id?: string | number;
     reimbursementTypeId: string;
     reimbursementType: string;
     title: string;
@@ -37,23 +62,15 @@ export interface Reimbursement {
     expenseDate: string;
     status: ReimbursementStatus;
     attachments: ReimbursementAttachment[];
-    employeeId: {
-        personalInfo: {
-            firstName: string;
-            lastName: string;
-            email: string;
-        };
-        fullName: string;
-        id: string;
-    };
+    employeeId: any;
     approval?: {
         approvedBy?: {
-            personalInfo: {
+            personalInfo?: {
                 firstName: string;
                 lastName: string;
             };
-            fullName: string;
-            id: string;
+            fullName?: string;
+            id?: string;
         };
         approvedAt?: string;
         rejectionReason?: string;

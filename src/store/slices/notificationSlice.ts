@@ -1,12 +1,46 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 
-interface NotificationState {
+export interface NotificationItem {
+  id: string;
+  _id?: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  type?: string;
+  [key: string]: any;
+}
+
+export interface NotificationState {
   unreadCount: number;
   newNotificationCount: number;
   message: string | null;
   type: "info" | "success" | "warning" | "error";
   refreshTrigger: number;
+  notifications: NotificationItem[];
+  loading?: boolean;
 }
+
+export const fetchNotifications = createAsyncThunk(
+  "notification/fetchNotifications",
+  async () => {
+    return [] as NotificationItem[];
+  }
+);
+
+export const markNotificationRead = createAsyncThunk(
+  "notification/markNotificationRead",
+  async (id: string) => {
+    return id;
+  }
+);
+
+export const markAllNotificationsRead = createAsyncThunk(
+  "notification/markAllNotificationsRead",
+  async () => {
+    return true;
+  }
+);
 
 const initialState: NotificationState = {
   unreadCount: 0,
@@ -14,6 +48,8 @@ const initialState: NotificationState = {
   message: null,
   type: "info",
   refreshTrigger: 0,
+  notifications: [],
+  loading: false,
 };
 
 const notificationSlice = createSlice({
@@ -46,6 +82,22 @@ const notificationSlice = createSlice({
     triggerRefresh: (state) => {
       state.refreshTrigger += 1;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchNotifications.fulfilled, (state, action) => {
+        state.notifications = action.payload;
+      })
+      .addCase(markNotificationRead.fulfilled, (state, action) => {
+        const notif = state.notifications.find((n) => (n.id === action.payload || n._id === action.payload));
+        if (notif) notif.isRead = true;
+      })
+      .addCase(markAllNotificationsRead.fulfilled, (state) => {
+        state.notifications.forEach((n) => {
+          n.isRead = true;
+        });
+        state.unreadCount = 0;
+      });
   },
 });
 

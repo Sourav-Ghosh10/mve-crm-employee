@@ -17,13 +17,10 @@ import { Loader2 } from "lucide-react";
 
 
 import { getDateInTimezone } from "../../utils/timezone";
-// import { useQuery } from "@tanstack/react-query";
-// import { attendanceService } from "../../services/attendanceService";
-// import { useMemo } from "react";
-// import type { AttendanceRecord } from "../../types/attendance";
+import MonthlyAttendanceCalendar from "../../components/features/attendance/MonthlyAttendanceCalendar";
 
 const Attendance: React.FC = () => {
-
+  const [activeViewTab, setActiveViewTab] = useState<"month" | "today">("month");
   const [isClockOutModalOpen, setIsClockOutModalOpen] = useState(false);
   const [isBreakModalOpen, setIsBreakModalOpen] = useState(false);
   const [breakTypes, setBreakTypes] = useState<BreakType[]>([]);
@@ -151,199 +148,237 @@ const Attendance: React.FC = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <Card title="Today's Details">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-2 border-b border-border">
-              <span className="text-sm text-foreground-secondary">Date</span>
-              <span className="font-medium text-sm">{formatDate(currentTime)}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-border">
-              <span className="text-sm text-foreground-secondary">Status</span>
-              <span className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold capitalize bg-muted text-foreground-secondary",
-                status === "present" && "bg-success/10 text-success",
-                status === "on_break" && "bg-info/10 text-info",
-                status === "clock_out" && "bg-warning/10 text-warning",
-              )}>
-                {status?.replace("_", " ")}
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-border">
-              <span className="text-sm text-foreground-secondary">Last Action</span>
-              <span className="font-medium text-sm">
-                {lastActionTime ? formatTime(lastActionTime) : "—"}
-              </span>
-            </div>
-
-            {status !== "clock_out" && status !== "not_clocked" && attendanceData?.currentSession && (
-              <div className="pt-4 border-t border-border space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-foreground-secondary">Net Working Time</span>
-                  <span className="font-medium text-sm text-primary">{attendanceData.currentSession.netDurationString || "—"}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-foreground-secondary">Break Duration</span>
-                  <span className="font-medium text-sm text-warning">{attendanceData.currentSession.breakDurationString || "—"} ({attendanceData.currentSession.breakCount || 0})</span>
-                </div>
-              </div>
+      {/* Top View Mode Tabs (Matches Screenshot) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveViewTab("month")}
+            className={cn(
+              "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer",
+              activeViewTab === "month"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:text-slate-950 hover:bg-slate-50"
             )}
-          </div>
-        </Card>
+          >
+            <Calendar className="w-4 h-4" />
+            Month-wise View
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveViewTab("today")}
+            className={cn(
+              "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer",
+              activeViewTab === "today"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:text-slate-950 hover:bg-slate-50"
+            )}
+          >
+            <Clock className="w-4 h-4" />
+            Today & This Week
+          </button>
+        </div>
 
-        <Card title="This Week's Summary">
-          <div className="space-y-3">
-            {(() => {
-              const daysMapping = [
-                { short: "Mon", full: "Monday", dayIndex: 1 },
-                { short: "Tue", full: "Tuesday", dayIndex: 2 },
-                { short: "Wed", full: "Wednesday", dayIndex: 3 },
-                { short: "Thu", full: "Thursday", dayIndex: 4 },
-                { short: "Fri", full: "Friday", dayIndex: 5 },
-                { short: "Sat", full: "Saturday", dayIndex: 6 },
-                { short: "Sun", full: "Sunday", dayIndex: 0 },
-              ];
-
-              // Get Monday of current week
-              const currentDay = currentDateTz.getDay();
-              const diff = currentDateTz.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
-              const monday = new Date(currentDateTz);
-              monday.setDate(diff);
-
-              return daysMapping
-                .map((day, idx) => {
-                  const date = new Date(monday);
-                  date.setDate(monday.getDate() + idx);
-
-                  // Only show days that belong to the current month
-                  if (date.getMonth() !== currentDateTz.getMonth()) return null;
-
-                  // Construct YYYY-MM-DD manually
-                  const year = date.getFullYear();
-                  const month = String(date.getMonth() + 1).padStart(2, "0");
-                  const dayVal = String(date.getDate()).padStart(2, "0");
-                  const dateStr = `${year}-${month}-${dayVal}`;
-
-                  const isToday =
-                    date.getDate() === currentDateTz.getDate() &&
-                    date.getMonth() === currentDateTz.getMonth() &&
-                    date.getFullYear() === currentDateTz.getFullYear();
-
-                  const dateZero = new Date(date);
-                  dateZero.setHours(0, 0, 0, 0);
-                  const todayZero = new Date(currentDateTz);
-                  todayZero.setHours(0, 0, 0, 0);
-                  const isPast = dateZero < todayZero;
-
-                  const isOffDay = attendanceData?.monthlyOffDays?.includes(dateStr);
-                  const holiday = attendanceData?.monthlyHolidays?.find((h) => h.date === dateStr);
-                  const leave = attendanceData?.monthlyLeaves?.find((l: any) => l.date === dateStr);
-
-                  // Use robust logic based on available arrays
-                  const isExplicitlyAbsent = attendanceData?.monthlyAbsentDays?.includes(dateStr);
-
-                  // Priority logic
-                  let displayStatus = "—";
-                  let styleClass = "bg-muted text-foreground-secondary";
-                  let textClass = "text-foreground-secondary";
-
-                  if (leave) {
-                    displayStatus = leave.isEarlyLeave ? "Early Leave" : "Leave";
-                    styleClass = leave.isEarlyLeave ? "bg-warning/10 text-warning" : "bg-destructive/10 text-destructive";
-                    textClass = leave.isEarlyLeave ? "text-warning" : "text-destructive";
-                  } else if (holiday) {
-                    displayStatus = holiday.name;
-                    styleClass = "bg-purple-500/10 text-purple-500";
-                    textClass = "text-purple-500";
-                  } else if (isExplicitlyAbsent) {
-                    displayStatus = "Absent";
-                    styleClass = "bg-destructive/10 text-destructive";
-                    textClass = "text-destructive";
-                  } else if (isOffDay) {
-                    displayStatus = "Off Day";
-                    styleClass = "bg-warning/10 text-warning";
-                    textClass = "text-warning";
-                  } else if (isToday) {
-                    displayStatus = workingHoursFormatted;
-                    styleClass = "bg-primary text-white";
-                    textClass = "text-primary";
-                  } else if (isPast) {
-                    // If past and not any of the above, assume Present
-                    displayStatus = "Present";
-                    styleClass = "bg-success/10 text-success";
-                    textClass = "text-success";
-                  }
-
-                  return (
-                    <div
-                      key={day.short}
-                      className={cn(
-                        "group relative flex items-center justify-between py-2 rounded-lg px-3 transition-colors",
-                        isToday ? "bg-primary/5 border border-primary/20" : "",
-                        isPast ? "opacity-90" : "",
-                        // Apply background logic for the whole row slightly if needed, or just keep mapped styles
-                        // Using the derived styleClass for the badge/icon area mostly
-                        leave ? "bg-destructive/5" : "",
-                        holiday ? "bg-purple-500/5" : "",
-                        isExplicitlyAbsent ? "bg-destructive/5" : "",
-                        displayStatus === "Present" && !isToday ? "bg-success/5" : "",
-                        isOffDay && !isToday ? "bg-muted/30" : ""
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold",
-                            styleClass
-                          )}
-                        >
-                          {day.short.charAt(0)}
-                        </span>
-                        <div className="flex flex-col">
-                          <span
-                            className={cn(
-                              "font-medium text-sm",
-                              textClass
-                            )}
-                          >
-                            {day.short}
-                          </span>
-                          <span className="text-[10px] text-foreground-secondary opacity-60">
-                            {date.toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={cn(
-                            "text-sm font-medium",
-                            textClass
-                          )}
-                        >
-                          {displayStatus}
-                          {leave?.isEarlyLeave && leave?.requestedHours ? ` (${leave.requestedHours}h)` : ''}
-                        </span>
-                        
-                        {/* Tooltip for Leave Comment */}
-                        {leave && (
-                          <div className="absolute right-full top-1/2 -translate-y-1/2 mr-2 w-48 p-2 bg-surface border border-border rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-xs">
-                            <p className="font-semibold mb-1">Approval Comment:</p>
-                            <p className="text-foreground-secondary break-words">{leave.approvalComment || "Approved"}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
-                .filter(Boolean);
-            })()}
-          </div>
-        </Card>
-
+        <div className="text-xs text-slate-500 font-medium hidden sm:block">
+          Interactive monthly attendance grid &amp; shift breakdown
+        </div>
       </div>
+
+      {activeViewTab === "month" ? (
+        <MonthlyAttendanceCalendar />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <Card title="Today's Details">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-2 border-b border-border">
+                  <span className="text-sm text-foreground-secondary">Date</span>
+                  <span className="font-medium text-sm">{formatDate(currentTime)}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-border">
+                  <span className="text-sm text-foreground-secondary">Status</span>
+                  <span className={cn(
+                    "px-3 py-1 rounded-full text-xs font-semibold capitalize bg-muted text-foreground-secondary",
+                    status === "present" && "bg-success/10 text-success",
+                    status === "on_break" && "bg-info/10 text-info",
+                    status === "clock_out" && "bg-warning/10 text-warning",
+                  )}>
+                    {status?.replace("_", " ")}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-border">
+                  <span className="text-sm text-foreground-secondary">Last Action</span>
+                  <span className="font-medium text-sm">
+                    {lastActionTime ? formatTime(lastActionTime) : "—"}
+                  </span>
+                </div>
+
+                {status !== "clock_out" && status !== "not_clocked" && attendanceData?.currentSession && (
+                  <div className="pt-4 border-t border-border space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-foreground-secondary">Net Working Time</span>
+                      <span className="font-medium text-sm text-primary">{attendanceData.currentSession.netDurationString || "—"}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-foreground-secondary">Break Duration</span>
+                      <span className="font-medium text-sm text-warning">{attendanceData.currentSession.breakDurationString || "—"} ({attendanceData.currentSession.breakCount || 0})</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            <Card title="This Week's Summary">
+              <div className="space-y-3">
+                {(() => {
+                  const daysMapping = [
+                    { short: "Mon", full: "Monday", dayIndex: 1 },
+                    { short: "Tue", full: "Tuesday", dayIndex: 2 },
+                    { short: "Wed", full: "Wednesday", dayIndex: 3 },
+                    { short: "Thu", full: "Thursday", dayIndex: 4 },
+                    { short: "Fri", full: "Friday", dayIndex: 5 },
+                    { short: "Sat", full: "Saturday", dayIndex: 6 },
+                    { short: "Sun", full: "Sunday", dayIndex: 0 },
+                  ];
+
+                  // Get Monday of current week
+                  const currentDay = currentDateTz.getDay();
+                  const diff = currentDateTz.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+                  const monday = new Date(currentDateTz);
+                  monday.setDate(diff);
+
+                  return daysMapping
+                    .map((day, idx) => {
+                      const date = new Date(monday);
+                      date.setDate(monday.getDate() + idx);
+
+                      // Only show days that belong to the current month
+                      if (date.getMonth() !== currentDateTz.getMonth()) return null;
+
+                      // Construct YYYY-MM-DD manually
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, "0");
+                      const dayVal = String(date.getDate()).padStart(2, "0");
+                      const dateStr = `${year}-${month}-${dayVal}`;
+
+                      const isTodayDate =
+                        date.getDate() === currentDateTz.getDate() &&
+                        date.getMonth() === currentDateTz.getMonth() &&
+                        date.getFullYear() === currentDateTz.getFullYear();
+
+                      const dateZero = new Date(date);
+                      dateZero.setHours(0, 0, 0, 0);
+                      const todayZero = new Date(currentDateTz);
+                      todayZero.setHours(0, 0, 0, 0);
+                      const isPast = dateZero < todayZero;
+
+                      const isOffDay = attendanceData?.monthlyOffDays?.includes(dateStr);
+                      const holiday = attendanceData?.monthlyHolidays?.find((h) => h.date === dateStr);
+                      const leave = attendanceData?.monthlyLeaves?.find((l: any) => l.date === dateStr);
+
+                      // Use robust logic based on available arrays
+                      const isExplicitlyAbsent = attendanceData?.monthlyAbsentDays?.includes(dateStr);
+
+                      // Priority logic
+                      let displayStatus = "—";
+                      let styleClass = "bg-muted text-foreground-secondary";
+                      let textClass = "text-foreground-secondary";
+
+                      if (leave) {
+                        displayStatus = leave.isEarlyLeave ? "Early Leave" : "Leave";
+                        styleClass = leave.isEarlyLeave ? "bg-warning/10 text-warning" : "bg-destructive/10 text-destructive";
+                        textClass = leave.isEarlyLeave ? "text-warning" : "text-destructive";
+                      } else if (holiday) {
+                        displayStatus = holiday.name;
+                        styleClass = "bg-purple-500/10 text-purple-500";
+                        textClass = "text-purple-500";
+                      } else if (isExplicitlyAbsent) {
+                        displayStatus = "Absent";
+                        styleClass = "bg-destructive/10 text-destructive";
+                        textClass = "text-destructive";
+                      } else if (isOffDay) {
+                        displayStatus = "Off Day";
+                        styleClass = "bg-warning/10 text-warning";
+                        textClass = "text-warning";
+                      } else if (isTodayDate) {
+                        displayStatus = workingHoursFormatted;
+                        styleClass = "bg-primary text-white";
+                        textClass = "text-primary";
+                      } else if (isPast) {
+                        // If past and not any of the above, assume Present
+                        displayStatus = "Present";
+                        styleClass = "bg-success/10 text-success";
+                        textClass = "text-success";
+                      }
+
+                      return (
+                        <div
+                          key={day.short}
+                          className={cn(
+                            "group relative flex items-center justify-between py-2 rounded-lg px-3 transition-colors",
+                            isTodayDate ? "bg-primary/5 border border-primary/20" : "",
+                            isPast ? "opacity-90" : "",
+                            leave ? "bg-destructive/5" : "",
+                            holiday ? "bg-purple-500/5" : "",
+                            isExplicitlyAbsent ? "bg-destructive/5" : "",
+                            displayStatus === "Present" && !isTodayDate ? "bg-success/5" : "",
+                            isOffDay && !isTodayDate ? "bg-muted/30" : ""
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={cn(
+                                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold",
+                                styleClass
+                              )}
+                            >
+                              {day.short.charAt(0)}
+                            </span>
+                            <div className="flex flex-col">
+                              <span
+                                className={cn(
+                                  "font-medium text-sm",
+                                  textClass
+                                )}
+                              >
+                                {day.short}
+                              </span>
+                              <span className="text-[10px] text-foreground-secondary opacity-60">
+                                {date.toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                "text-sm font-medium",
+                                textClass
+                              )}
+                            >
+                              {displayStatus}
+                              {leave?.isEarlyLeave && leave?.requestedHours ? ` (${leave.requestedHours}h)` : ''}
+                            </span>
+                            
+                            {/* Tooltip for Leave Comment */}
+                            {leave && (
+                              <div className="absolute right-full top-1/2 -translate-y-1/2 mr-2 w-48 p-2 bg-surface border border-border rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-xs">
+                                <p className="font-semibold mb-1">Approval Comment:</p>
+                                <p className="text-foreground-secondary break-words">{leave.approvalComment || "Approved"}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })
+                    .filter(Boolean);
+                })()}
+              </div>
+            </Card>
+
+          </div>
+      )}
 
       <Modal
         open={isClockOutModalOpen}

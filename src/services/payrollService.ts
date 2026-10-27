@@ -51,6 +51,41 @@ export interface SinglePayslipResponse {
   data: Payslip;
 }
 
+export interface AllowanceDeductionSlab {
+  minAmount: number;
+  maxAmount: number | null;
+  fixedAmount: number;
+}
+
+export interface AllowanceDeductionMaster {
+  _id: string;
+  id?: string;
+  name: string;
+  code: string;
+  type: "ALLOWANCE" | "DEDUCTION";
+  calculationType: "FIXED" | "PERCENTAGE" | "SLAB";
+  percentageOf?: "CTC" | "BASIC" | "GROSS";
+  value: number;
+  slabs?: AllowanceDeductionSlab[];
+  isBalancing?: boolean;
+  isTaxable?: boolean;
+  isActive: boolean;
+  displayOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AllowanceDeductionMasterResponse {
+  success: boolean;
+  data: AllowanceDeductionMaster[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+  };
+}
+
 const payrollService = {
   getMyPayslips: async (params?: {
     page?: number;
@@ -73,10 +108,36 @@ const payrollService = {
     const response = await api.post(`/payroll/payslips/${id}/send-email`);
     return response.data;
   },
+
   downloadPayslip: async (id: string): Promise<Blob> => {
     const response = await api.get(`/payroll/payslips/${id}/download`, {
       responseType: "blob",
     });
+    return response.data;
+  },
+
+  getMasters: async (params?: any): Promise<AllowanceDeductionMasterResponse> => {
+    const response = await api.get("/payroll/masters", { params });
+    return response.data;
+  },
+
+  toggleMasterStatus: async (id: string, isActive: boolean) => {
+    const response = await api.patch(`/payroll/masters/${id}/status`, { isActive });
+    return response.data;
+  },
+
+  deleteMaster: async (id: string) => {
+    const response = await api.delete(`/payroll/masters/${id}`);
+    return response.data;
+  },
+
+  updateMaster: async (id: string, data: any) => {
+    const response = await api.put(`/payroll/masters/${id}`, data);
+    return response.data;
+  },
+
+  createMaster: async (data: any) => {
+    const response = await api.post("/payroll/masters", data);
     return response.data;
   },
 };

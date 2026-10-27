@@ -169,8 +169,10 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                         newStatus = "on_break";
                     } else if (data.isClockedIn) {
                         newStatus = "present";
-                    } else {
+                    } else if ((data.totalSessions && data.totalSessions > 0) || (data.totalHours && data.totalHours > 0) || data.currentSession) {
                         newStatus = "clock_out";
+                    } else {
+                        newStatus = "not_clocked";
                     }
                 } else {
                     const lastAction = data.lastAction?.toLowerCase();
@@ -217,7 +219,8 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                 setLastActionTime(dateObj && !isNaN(dateObj.getTime()) ? dateObj : null);
 
                 if (newStatus === "on_break") {
-                    setBreakStartTime(data.timestamp ? new Date(data.timestamp) : new Date());
+                    const bStart = data.currentBreak?.startTime || data.timestamp;
+                    setBreakStartTime(bStart ? new Date(bStart) : new Date());
                 } else {
                     setBreakStartTime(null);
                 }

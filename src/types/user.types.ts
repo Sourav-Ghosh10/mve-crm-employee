@@ -1,8 +1,9 @@
-export type UserRole = "admin" | "hr" | "employee" | "manager";
+export type UserRole = "admin" | "hr" | "employee" | "manager" | "Client" | string;
 export type UserStatus = "active" | "inactive" | "on_leave";
 
 export interface User {
   id: string;
+  _id?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -23,7 +24,7 @@ export interface User {
     weeklyOff: string[];
   };
   dateOfBirth?: string;
-    panNumber?: string;
+  panNumber?: string;
   address?: {
     street?: string;
     city?: string;
@@ -36,13 +37,66 @@ export interface User {
     relationship?: string;
     phone?: string;
   };
+  fullName?: string;
+  // Admin-compatible fields
+  personalInfo: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    profilePicture?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      country?: string;
+      zipCode?: string;
+    };
+    dateOfBirth?: string;
+    panNumber?: string;
+    emergencyContact?: {
+      name?: string;
+      relationship?: string;
+      phone?: string;
+    };
+  };
+  employment: {
+    role: any;
+    department: string;
+    designation: string;
+    dateOfJoining?: string;
+    location?: string;
+    timezone?: string;
+    workingHours?: {
+      startTime: string;
+      endTime: string;
+      weeklyOff: string[];
+    };
+  };
+  isActive?: boolean;
+  userType?: string;
+  clientId?: string;
+  username?: string;
+  leaveBalance?: any;
 }
 
 export interface UserFilters {
   role?: UserRole;
+  roleId?: string;
   department?: string;
   status?: UserStatus;
   search?: string;
+  limit?: number;
+  page?: number;
+  isActive?: boolean;
+}
+
+export interface PaginatedUserResponse {
+  users: User[];
+  total: number;
+  totalPages: number;
+  page: number;
+  limit: number;
 }
 
 // Backend user structure
@@ -86,27 +140,66 @@ export interface BackendUser {
   isActive: boolean;
 }
 
-export const mapUserResponse = (backendUser: BackendUser): User => {
+export const mapUserResponse = (backendUser: any): User => {
+  const pInfo = backendUser?.personalInfo || {};
+  const emp = backendUser?.employment || {};
+  const firstName = pInfo.firstName || backendUser?.firstName || "";
+  const lastName = pInfo.lastName || backendUser?.lastName || "";
+  const email = pInfo.email || backendUser?.email || "";
+  const phone = pInfo.phone || backendUser?.phone;
+  const role = (emp.role || backendUser?.role || "employee") as UserRole;
+  const department = emp.department || backendUser?.department || "";
+  const designation = emp.designation || backendUser?.designation || "";
+  const joinDate = emp.dateOfJoining || backendUser?.joinDate || "";
+  const location = emp.location || backendUser?.location;
+  const timezone = emp.timezone || backendUser?.timezone;
+  const workingHours = emp.workingHours || backendUser?.workingHours;
+  const weeklyOff = workingHours?.weeklyOff || backendUser?.weeklyOff;
+  const id = backendUser?.id || backendUser?._id || "";
+
   return {
-    id: backendUser.id || backendUser._id || "",
-    firstName: backendUser.personalInfo.firstName,
-    lastName: backendUser.personalInfo.lastName,
-    email: backendUser.personalInfo.email,
-    phone: backendUser.personalInfo.phone,
-    role: backendUser.employment.role as UserRole,
-    department: backendUser.employment.department,
-    designation: backendUser.employment.designation,
-    status: (backendUser.isActive ? "active" : "inactive") as UserStatus,
-    joinDate: backendUser.employment.dateOfJoining,
-    location: backendUser.employment.location,
-    timezone: backendUser.employment.timezone,
-    employeeId: backendUser.employeeId,
-    weeklyOff: backendUser.employment.workingHours?.weeklyOff,
-    workingHours: backendUser.employment.workingHours,
-    dateOfBirth: backendUser.personalInfo.dateOfBirth,
-    panNumber: backendUser.personalInfo.panNumber || (backendUser as any).panNumber,
-    address: backendUser.personalInfo.address,
-    emergencyContact: backendUser.personalInfo.emergencyContact || (backendUser as any).emergencyContact,
+    id,
+    _id: id,
+    firstName,
+    lastName,
+    fullName: `${firstName} ${lastName}`.trim(),
+    email,
+    phone,
+    role,
+    department,
+    designation,
+    status: (backendUser?.isActive !== false ? "active" : "inactive") as UserStatus,
+    isActive: backendUser?.isActive !== false,
+    joinDate,
+    location,
+    timezone,
+    employeeId: backendUser?.employeeId,
+    weeklyOff,
+    workingHours,
+    dateOfBirth: pInfo.dateOfBirth || backendUser?.dateOfBirth,
+    panNumber: pInfo.panNumber || backendUser?.panNumber,
+    address: pInfo.address || backendUser?.address,
+    emergencyContact: pInfo.emergencyContact || backendUser?.emergencyContact,
+    personalInfo: {
+      firstName,
+      lastName,
+      email,
+      phone,
+      profilePicture: pInfo.profilePicture || backendUser?.profilePicture,
+      dateOfBirth: pInfo.dateOfBirth || backendUser?.dateOfBirth,
+      panNumber: pInfo.panNumber || backendUser?.panNumber,
+      address: pInfo.address || backendUser?.address,
+      emergencyContact: pInfo.emergencyContact || backendUser?.emergencyContact,
+    },
+    employment: {
+      role,
+      department,
+      designation,
+      dateOfJoining: joinDate,
+      location,
+      timezone,
+      workingHours,
+    },
   };
 };
 

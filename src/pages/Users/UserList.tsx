@@ -20,6 +20,7 @@ import Table from "../../components/common/Table";
 const INITIAL_USERS: User[] = [
   {
     id: "1",
+    _id: "1",
     firstName: "John",
     lastName: "Doe",
     email: "john.doe@example.com",
@@ -28,9 +29,21 @@ const INITIAL_USERS: User[] = [
     designation: "Senior Developer",
     status: "active",
     joinDate: "2023-01-15",
+    personalInfo: {
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+    },
+    employment: {
+      role: "admin",
+      department: "IT",
+      designation: "Senior Developer",
+      dateOfJoining: "2023-01-15",
+    },
   },
   {
     id: "2",
+    _id: "2",
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
@@ -39,9 +52,21 @@ const INITIAL_USERS: User[] = [
     designation: "HR Manager",
     status: "active",
     joinDate: "2023-03-10",
+    personalInfo: {
+      firstName: "Jane",
+      lastName: "Smith",
+      email: "jane.smith@example.com",
+    },
+    employment: {
+      role: "hr",
+      department: "Human Resources",
+      designation: "HR Manager",
+      dateOfJoining: "2023-03-10",
+    },
   },
   {
     id: "3",
+    _id: "3",
     firstName: "Robert",
     lastName: "Brown",
     email: "robert.brown@example.com",
@@ -50,6 +75,17 @@ const INITIAL_USERS: User[] = [
     designation: "Accountant",
     status: "on_leave",
     joinDate: "2023-06-20",
+    personalInfo: {
+      firstName: "Robert",
+      lastName: "Brown",
+      email: "robert.brown@example.com",
+    },
+    employment: {
+      role: "employee",
+      department: "Finance",
+      designation: "Accountant",
+      dateOfJoining: "2023-06-20",
+    },
   },
 ];
 

@@ -1,12 +1,38 @@
 import api from './api';
 import type {
+    Reimbursement,
     ReimbursementApiResponse,
     ReimbursementListApiResponse,
     CreateReimbursementPayload,
-    ReimbursementTypeResponse
+    ReimbursementTypeResponse,
+    PaginatedReimbursementResponse
 } from '../types/reimbursement.types';
 
 export const reimbursementService = {
+    /**
+     * Get all reimbursements (admin/manager view with pagination and filters)
+     */
+    getAll: async (params?: any): Promise<PaginatedReimbursementResponse> => {
+        const response = await api.get('/reimbursements', { params });
+        return response.data;
+    },
+
+    /**
+     * Get reimbursement by ID
+     */
+    getById: async (id: string): Promise<{ success: boolean; data: Reimbursement }> => {
+        const response = await api.get(`/reimbursements/${id}`);
+        return response.data;
+    },
+
+    /**
+     * Update reimbursement status (approve/reject)
+     */
+    updateStatus: async (id: string, payload: { status: string; rejectionReason?: string }): Promise<{ success: boolean; data: Reimbursement }> => {
+        const response = await api.patch(`/reimbursements/${id}/status`, payload);
+        return response.data;
+    },
+
     /**
      * Create a new reimbursement request
      * POST /api/reimbursements

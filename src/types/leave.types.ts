@@ -39,12 +39,30 @@ export interface UserLeaveBalance {
     workingHoursPerDay?: number;
 }
 
+export interface LeaveBalanceDetails {
+    leaveTypeId?: string;
+    leaveTypeName?: string;
+    name?: string;
+    allocated?: number;
+    used?: number;
+    balance?: number;
+    currentBalance?: number | null;
+    totalAllocated?: number | null;
+    isPaid?: boolean;
+    [key: string]: any;
+}
+
 export interface LeaveBalanceResponse {
     userId: string;
     name: string;
     department: string;
     balances: UserLeaveBalance[];
 }
+
+export type EmployeeLeaveBalanceResponse = LeaveBalanceResponse & {
+    data?: any;
+    [key: string]: any;
+};
 
 export interface CreateLeaveRequestPayload {
     leaveType: LeaveType;

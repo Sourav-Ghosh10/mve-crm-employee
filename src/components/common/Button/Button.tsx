@@ -14,6 +14,8 @@ const buttonVariants = cva(
         outline:
           "border-2 border-primary bg-transparent text-primary hover:bg-primary/10",
         secondary: "bg-muted text-foreground hover:bg-muted/80",
+        secondaryOutline: "border border-border bg-transparent text-foreground hover:bg-muted",
+        destructiveOutline: "border border-error bg-transparent text-error hover:bg-error/10",
         ghost: "hover:bg-muted hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
@@ -39,6 +41,7 @@ export interface ButtonProps
   endIcon?: React.ReactNode;
   fullWidth?: boolean;
   loading?: boolean;
+  isLoading?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -51,22 +54,25 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       endIcon,
       fullWidth,
       loading,
+      isLoading,
       children,
       ...props
     },
     ref,
   ) => {
+    const isButtonLoading = loading || isLoading;
     return (
       <button
+        ref={ref}
         className={cn(
           buttonVariants({ variant, size }),
           fullWidth && "w-full",
           className,
         )}
-        ref={ref}
+        disabled={props.disabled || isButtonLoading}
         {...props}
       >
-        {loading ? (
+        {isButtonLoading ? (
           <Loader2 className="w-4 h-4 animate-spin shrink-0" />
         ) : (
           startIcon && <span className="shrink-0">{startIcon}</span>

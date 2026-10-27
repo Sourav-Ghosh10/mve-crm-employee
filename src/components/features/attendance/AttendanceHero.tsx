@@ -192,30 +192,17 @@ const AttendanceHero: React.FC<AttendanceHeroProps> = ({
                             )}
 
                             {status === "on_break" && (
-                                <>
-                                    <Button
-                                        onClick={onBreakResume}
-                                        disabled={loading}
-                                        variant="default"
-                                        type="button"
-                                        size="lg"
-                                        className="bg-white text-primary hover:bg-white/90 border-0 shadow-lg"
-                                        startIcon={loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-5 h-5" />}
-                                    >
-                                        Resume Work
-                                    </Button>
-                                    <Button
-                                        onClick={onClockOut}
-                                        disabled={loading}
-                                        variant="destructive"
-                                        type="button"
-                                        size="lg"
-                                        className="bg-error text-white hover:bg-error-light opacity-70 hover:opacity-100"
-                                        startIcon={loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogOut className="w-5 h-5" />}
-                                    >
-                                        Clock Out
-                                    </Button>
-                                </>
+                                <Button
+                                    onClick={onBreakResume}
+                                    disabled={loading}
+                                    variant="default"
+                                    type="button"
+                                    size="lg"
+                                    className="bg-white text-primary hover:bg-white/90 border-0 shadow-lg"
+                                    startIcon={loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-5 h-5" />}
+                                >
+                                    Resume Work
+                                </Button>
                             )}
                         </>
                     )}

@@ -3,20 +3,24 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { User } from "../../types/user.types";
 import { authService } from "../../services/authService";
 import type { LoginCredentials } from "../../services/authService";
-import { tokenStorage } from "../../services/api";
+import { tokenStorage } from "../../services/tokenStorage";
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   isLoading: boolean;
   error: string | null;
+  isInitialized: boolean;
+  permissions: string[];
 }
 
 const initialState: AuthState = {
-  isAuthenticated: authService.isAuthenticated(),
+  isAuthenticated: !!tokenStorage.getAccessToken(),
   user: null,
   isLoading: false,
   error: null,
+  isInitialized: true,
+  permissions: [],
 };
 
 // Async thunks

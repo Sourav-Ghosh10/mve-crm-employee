@@ -2,28 +2,36 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import type { User, UserRole } from "../../types/user.types";
 import { organizationService } from "../../services/organizationService";
 import type { Department, Designation } from "../../types/organization.types";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { cn } from "../../lib/utils";
 
-interface UserFormProps {
-  initialValues?: Partial<User>;
-  onSubmit: (data: Partial<User>) => void;
-  onCancel: () => void;
+export interface UserFormProps {
+  initialValues?: any;
+  onSubmit: (data: any) => any;
+  onCancel?: () => void;
   isLoading?: boolean;
+  locations?: any[];
+  departments?: any[];
+  designations?: any[];
+  roles?: any[];
+  users?: any[];
+  leaveTypes?: any[];
+  error?: string | string[] | null;
+  onSearchUsers?: (search: string) => void;
+  onLoadMoreUsers?: () => void;
+  isUsersLoadingMore?: boolean;
+  onClearError?: () => void;
+  [key: string]: any;
 }
 
 const validationSchema = yup.object({
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  role: yup
-    .string()
-    .oneOf(["admin", "hr", "employee", "manager"])
-    .required("Role is required"),
+  role: yup.string().required("Role is required"),
   department: yup.string().required("Department is required"),
   designation: yup.string().required("Designation is required"),
   phone: yup.string(),
@@ -109,13 +117,13 @@ const UserForm: React.FC<UserFormProps> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
+  } = useForm<any>({
+    resolver: yupResolver(validationSchema) as any,
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
-      role: "employee" as UserRole,
+      role: "employee",
       department: "",
       designation: "",
       phone: "",
@@ -140,7 +148,7 @@ const UserForm: React.FC<UserFormProps> = ({
               {...field}
               label="First Name"
               error={!!errors.firstName}
-              helperText={errors.firstName?.message}
+              helperText={errors.firstName?.message as string | undefined}
             />
           )}
         />
@@ -152,7 +160,7 @@ const UserForm: React.FC<UserFormProps> = ({
               {...field}
               label="Last Name"
               error={!!errors.lastName}
-              helperText={errors.lastName?.message}
+              helperText={errors.lastName?.message as string | undefined}
             />
           )}
         />
@@ -166,7 +174,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 label="Email Address"
                 type="email"
                 error={!!errors.email}
-                helperText={errors.email?.message}
+                helperText={errors.email?.message as string | undefined}
               />
             )}
           />
@@ -179,7 +187,7 @@ const UserForm: React.FC<UserFormProps> = ({
               {...field}
               label="Role"
               error={!!errors.role}
-              helperText={errors.role?.message}
+              helperText={errors.role?.message as string | undefined}
             >
               <option value="employee">Employee</option>
               <option value="manager">Manager</option>
@@ -196,7 +204,7 @@ const UserForm: React.FC<UserFormProps> = ({
               {...field}
               label="Department"
               error={!!errors.department}
-              helperText={errors.department?.message}
+              helperText={errors.department?.message as string | undefined}
             >
               <option value="">Select Department</option>
               {departments.map((dept) => (
@@ -215,7 +223,7 @@ const UserForm: React.FC<UserFormProps> = ({
               {...field}
               label="Designation"
               error={!!errors.designation}
-              helperText={errors.designation?.message}
+              helperText={errors.designation?.message as string | undefined}
             >
               <option value="">Select Designation</option>
               {designations.map((desig) => (
@@ -234,7 +242,7 @@ const UserForm: React.FC<UserFormProps> = ({
               {...field}
               label="Phone Number"
               error={!!errors.phone}
-              helperText={errors.phone?.message}
+              helperText={errors.phone?.message as string | undefined}
             />
           )}
         />

@@ -1,4 +1,5 @@
-import api, { tokenStorage } from "./api";
+import api from "./api";
+import { tokenStorage } from "./tokenStorage";
 import type { User, BackendUser } from "../types/user.types";
 import { mapUserResponse } from "../types/user.types";
 import pushNotificationService from "./pushNotificationService";
@@ -7,6 +8,7 @@ export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
+  checked?: boolean;
 }
 
 export interface AuthResponse {
@@ -183,18 +185,20 @@ export const authService = {
   },
 
   resetPassword: async (
-    email: string,
-    otp: string,
-    newPassword: string
+    arg1: string,
+    arg2: string,
+    arg3?: string
   ): Promise<{ success: boolean; message: string }> => {
-    const response = await api.post("/auth/reset-password", {
-      email,
-      otp,
-      newPassword,
-    });
-    if (!response.data.success) {
+    let payload;
+    if (arg3 !== undefined) {
+      payload = { email: arg1, otp: arg2, newPassword: arg3 };
+    } else {
+      payload = { password: arg1, token: arg2 };
+    }
+    const response = await api.post("/auth/reset-password", payload);
+    if (!response.data.success && response.data.success !== undefined) {
       throw new Error(response.data.message || "Failed to reset password");
     }
-    return response.data;
+    return response.data || { success: true, message: "Password reset successful" };
   },
 };

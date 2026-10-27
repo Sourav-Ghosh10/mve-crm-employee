@@ -1,46 +1,18 @@
 import axios from "axios";
 import type { AxiosError, InternalAxiosRequestConfig, AxiosRequestHeaders, AxiosRequestConfig } from "axios";
-import { getItem, setItem, removeItem, getSessionItem, setSessionItem, removeSessionItem } from "../utils/storage";
 import { store } from "../store/store";
 import { startLoading, stopLoading } from "../store/slices/uiSlice";
 import pushNotificationService from "./pushNotificationService";
+import { getApiBaseUrl } from "../utils/env";
 
 export interface CustomAxiosConfig extends AxiosRequestConfig {
   skipLoading?: boolean;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL = getApiBaseUrl();
 
-// Token storage keys
-const ACCESS_TOKEN_KEY = "accessToken";
-const REFRESH_TOKEN_KEY = "refreshToken";
-
-// Token management utilities
-export const tokenStorage = {
-  getAccessToken: () => (getItem(ACCESS_TOKEN_KEY) || getSessionItem(ACCESS_TOKEN_KEY)) as string | null,
-  getRefreshToken: () => (getItem(REFRESH_TOKEN_KEY) || getSessionItem(REFRESH_TOKEN_KEY)) as string | null,
-  setTokens: (accessToken: string, refreshToken: string, rememberMe = true) => {
-    // Clear potentially conflicting tokens first
-    removeItem(ACCESS_TOKEN_KEY);
-    removeItem(REFRESH_TOKEN_KEY);
-    removeSessionItem(ACCESS_TOKEN_KEY);
-    removeSessionItem(REFRESH_TOKEN_KEY);
-
-    if (rememberMe) {
-      setItem(ACCESS_TOKEN_KEY, accessToken);
-      setItem(REFRESH_TOKEN_KEY, refreshToken);
-    } else {
-      setSessionItem(ACCESS_TOKEN_KEY, accessToken);
-      setSessionItem(REFRESH_TOKEN_KEY, refreshToken);
-    }
-  },
-  clearTokens: () => {
-    removeItem(ACCESS_TOKEN_KEY);
-    removeItem(REFRESH_TOKEN_KEY);
-    removeSessionItem(ACCESS_TOKEN_KEY);
-    removeSessionItem(REFRESH_TOKEN_KEY);
-  },
-};
+import { tokenStorage } from "./tokenStorage";
+export { tokenStorage };
 
 // Create axios instance
 const api = axios.create({

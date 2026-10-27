@@ -35,10 +35,10 @@ describe("AttendanceHero Component", () => {
         expect(screen.getByText("Clock Out")).toBeInTheDocument();
     });
 
-    it("renders 'Resume Work' and 'Clock Out' when status is on_break", () => {
+    it("renders 'Resume Work' and does not render 'Clock Out' when status is on_break", () => {
         render(<AttendanceHero {...defaultProps} status="on_break" lastActionTime={new Date()} breakDurationFormatted="00:15:00" />);
         expect(screen.getByText("Resume Work")).toBeInTheDocument();
-        expect(screen.getByText("Clock Out")).toBeInTheDocument();
+        expect(screen.queryByText("Clock Out")).not.toBeInTheDocument();
         expect(screen.getByText("00:15:00")).toBeInTheDocument();
     });
 

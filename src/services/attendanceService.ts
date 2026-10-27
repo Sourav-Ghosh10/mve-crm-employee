@@ -4,9 +4,23 @@ import api from "./api";
 import type { AxiosRequestConfig } from "axios";
 
 export const attendanceService = {
-  getAll: async () => {
-    const response = await api.get("/attendance");
+  getAll: async (params?: any) => {
+    const response = await api.get("/attendance", { params });
     return response.data;
+  },
+  getMemberAttendance: async (params?: {
+    startDate?: string;
+    endDate?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await api.get("/attendance/me", { params });
+    return response.data;
+  },
+  getByDateAndUser: async (date: string, userId: string) => {
+    const response = await api.get(`/attendance/${date}/${userId}`);
+    return response.data?.data || response.data;
   },
   clockIn: async (data?: { latitude?: number; longitude?: number; deviceInfo?: string; remarks?: string }) => {
     const response = await api.post("/attendance/clock-in", data);
